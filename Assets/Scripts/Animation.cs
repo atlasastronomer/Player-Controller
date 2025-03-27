@@ -22,7 +22,8 @@ public class Animation : MonoBehaviour
         
         // Run animation
         animator.SetBool("run", (inputHorizontal != 0 && player.isGrounded));
-        animator.SetBool("jump", !player.isGrounded && !player.isDashing);
+        animator.SetBool("jump", player.isJumping);
+        animator.SetBool("fall", player.isFalling);
     }
     
     void Flip()

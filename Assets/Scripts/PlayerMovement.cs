@@ -8,6 +8,8 @@ public class PlayerMovement : MonoBehaviour
 {
     // States
     public bool isGrounded;
+    public bool isJumping;
+    public bool isFalling;
     private bool canJump;
     private bool canWallJump;
     private bool isTouchingCeiling;
@@ -54,7 +56,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float gravityMult = 0.5f; // jump released early
     [SerializeField] private float terminalVelocity = 80f; // max fall speed
 
-    Vector3 displacement;
+    public Vector3 displacement;
 
     Controller2D controller;
 
@@ -70,6 +72,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
     void Update() {
+        Debug.Log(isFalling);
         // States
         isGrounded = controller.collisions.below;
         isTouchingCeiling = controller.collisions.above;
@@ -81,9 +84,21 @@ public class PlayerMovement : MonoBehaviour
         }
         if (isGrounded) {
             timeLastTouchedGround = 0;
+            isJumping = false;
+            isFalling = false;
         }
         if (isTouchingCeiling) { // prevents buffering multiple jumps in two-tile high passageway
             bufferWindow = -1;
+        }
+
+        // Jumping or Falling
+        if (!isGrounded && displacement.y > 0) {
+            isJumping = true;
+            isFalling = false;
+        }
+        if (!isGrounded && displacement.y <= 0) {
+            isJumping = false;
+            isFalling = true;
         }
         
         // Timers
