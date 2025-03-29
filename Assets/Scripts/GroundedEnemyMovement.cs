@@ -7,6 +7,8 @@ using Unity.VisualScripting;
 public class GroundedEnemyMovement : MonoBehaviour {
     // States
     public bool isGrounded;
+    public bool isJumping;
+    public bool isFalling;
     private bool canJump = true;
     private bool canWallJump;
     private bool isTouchingCeiling;
@@ -20,7 +22,7 @@ public class GroundedEnemyMovement : MonoBehaviour {
     private CharacterController playerController;
     
     // AI Variables
-    private float horizontalInput;
+    public float horizontalInput;
     private float verticalInput;
     private bool enemyJumped = false;
     private bool enemyDashed = false;
@@ -92,6 +94,18 @@ public class GroundedEnemyMovement : MonoBehaviour {
         }
         if (isGrounded) {
             timeLastTouchedGround = 0;
+            isJumping = false;
+            isFalling = false;
+        }
+        
+        // Jumping or Falling
+        if (!isGrounded && displacement.y > 0) {
+            isJumping = true;
+            isFalling = false;
+        }
+        if (!isGrounded && displacement.y <= 0) {
+            isJumping = false;
+            isFalling = true;
         }
         
         // Timers

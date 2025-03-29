@@ -1,29 +1,28 @@
 using UnityEngine;
 
-public class Animation : MonoBehaviour
+public class GroundedEnemyAnimation : MonoBehaviour
 {
     private bool facingRight = true;
     private Animator animator;
-    private PlayerMovement player;
+    private GroundedEnemyMovement enemy;
 
     public void Start()
     {
         animator = GetComponent<Animator>();
-        player = GetComponent<PlayerMovement>();
+        enemy = GetComponent<GroundedEnemyMovement>();
     }
     void Update()
     {
-        // Flip sprite
-        float inputHorizontal = Input.GetAxisRaw("Horizontal");
-        if (inputHorizontal > 0 && !facingRight || inputHorizontal < 0 && facingRight)
+        // Flip sprite;
+        if (enemy.horizontalInput > 0 && !facingRight || enemy.horizontalInput < 0 && facingRight)
         {
             Flip();
         }
         
         // Animations
-        animator.SetBool("run", (inputHorizontal != 0 && player.isGrounded));
-        animator.SetBool("jump", player.isJumping);
-        animator.SetBool("fall", player.isFalling);
+        animator.SetBool("run", enemy.horizontalInput != 0 && enemy.isGrounded);
+        animator.SetBool("jump", enemy.isJumping);
+        animator.SetBool("fall", enemy.isFalling);
     }
     
     void Flip()
