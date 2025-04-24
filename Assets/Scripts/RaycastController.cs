@@ -8,7 +8,7 @@ public class RaycastController : MonoBehaviour
     
     // We set a skin width to allow a small amount of space for our rays to fire from.
     // In brief, skin width prevents jittery movement and getting stuck
-    public const float skinWidth = .030f;
+    public const float skinWidth = .075f;
     
     [HideInInspector]
     public int horizontalRayCount = 4;

@@ -72,7 +72,6 @@ public class PlayerMovement : MonoBehaviour
     }
 
     void Update() {
-        Debug.Log(isFalling);
         // States
         isGrounded = controller.collisions.below;
         isTouchingCeiling = controller.collisions.above;

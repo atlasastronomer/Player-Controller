@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using System.Collections;
 using Unity.VisualScripting;
@@ -64,7 +65,6 @@ public class GroundedEnemyMovement : MonoBehaviour {
     // Gravity
     private float gravity;
     private float jumpForce;
-    [SerializeField] private float gravityMult = 0.5f; // jump released early
     [SerializeField] private float terminalVelocity = 80f; // max fall speed
 
     Vector3 displacement;
@@ -114,6 +114,8 @@ public class GroundedEnemyMovement : MonoBehaviour {
         
         // Jump
         float distance = Vector3.Distance(player.transform.position, transform.position);
+        bool isBelowPlayer = player.transform.position.y > transform.position.y;
+        
         enemyJumped = distance < jumpingProximity;
         
         if (enemyJumped && canJump) {
@@ -121,24 +123,29 @@ public class GroundedEnemyMovement : MonoBehaviour {
             if (timeLastTouchedGround <= coyoteTimeWindow && displacement.y <= 0) {
                 displacement.y = jumpForce;
             }
-            // Wall Jump
-            if (isWallSlidingLeft || isWallSlidingRight) {
-                // Wall Climb
-                if (Mathf.Sign(horizontalInput) == Mathf.Sign(controller.collisions.facingDirection) && horizontalInput != 0) {
-                    displacement.x = -controller.collisions.facingDirection * wallClimb.x;
-                    displacement.y = wallClimb.y;
-                }
-                // Wall Hop
-                else if (horizontalInput == 0) {
-                    displacement.x = -controller.collisions.facingDirection * wallHop.x;
-                    displacement.y = wallHop.y;
-                }
-                // Wall Leap
-                else
-                {
-                    displacement.x = -controller.collisions.facingDirection * wallLeap.x;
-                    displacement.y = wallLeap.y;
-                }
+        }
+
+        if ((controller.collisions.left || controller.collisions.right) && isGrounded && isBelowPlayer) {
+            displacement.y = jumpForce;
+        }
+        
+        // Wall Jump
+        if ((isWallSlidingLeft || isWallSlidingRight) && isBelowPlayer) {
+            // Wall Climb
+            if (Mathf.Sign(horizontalInput) == Mathf.Sign(controller.collisions.facingDirection) && horizontalInput != 0) {
+                displacement.x = -controller.collisions.facingDirection * wallClimb.x;
+                displacement.y = wallClimb.y;
+            }
+            // Wall Hop
+            else if (horizontalInput == 0) {
+                displacement.x = -controller.collisions.facingDirection * wallHop.x;
+                displacement.y = wallHop.y;
+            }
+            // Wall Leap
+            else
+            {
+                displacement.x = -controller.collisions.facingDirection * wallLeap.x;
+                displacement.y = wallLeap.y;
             }
         }
         

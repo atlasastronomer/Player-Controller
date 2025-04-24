@@ -3,20 +3,26 @@ using UnityEngine.SceneManagement;
 
 public class GemController : MonoBehaviour {
     public static int gemsRemaining;
-    void Start()
-    {
+
+    void Awake() {
+        Gem.OnGemCollect += DecrementGems;
+    }
+    void Start() {
         gemsRemaining = transform.childCount;
         Debug.Log(gemsRemaining);
-        Gem.OnGemCollect += DecrementGems;
-
     }
 
     private void DecrementGems() {
-        gemsRemaining = gemsRemaining - 1;
+        gemsRemaining -= 1;
         Debug.Log(gemsRemaining);
 
         if (gemsRemaining == 0) {
             SceneManager.LoadScene("WinScreen");
         }
+    }
+    
+    void OnDestroy() {
+        // Unsubscribe from the event to prevent multiple subscriptions
+        Gem.OnGemCollect -= DecrementGems;
     }
 }

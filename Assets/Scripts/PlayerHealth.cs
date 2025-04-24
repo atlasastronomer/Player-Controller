@@ -1,26 +1,48 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour {
+    public AudioClip damageTakenSound;
+    public AudioSource audioSource;
+    
     public int maxHealth = 5;
     private int currentHealth;
 
     public HealthUI healthUI;
-    private SpriteRenderer spriteRenderer; 
+    private SpriteRenderer spriteRenderer;
     
-    void Start()
+    [SerializeField] public float gracePeriodCooldown = 0.75f;
+    private float gracePeriod = 0;
+    
+    public static event Action OnDamageTaken;
+    
+    private void Start()
     {
+        audioSource = GetComponent<AudioSource>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        
         currentHealth = maxHealth;
         healthUI.SetMaxHearts(maxHealth);
         
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        gracePeriod = gracePeriodCooldown;
+    }
+
+    private void Update()
+    {
+        gracePeriod -=  Time.deltaTime;
     }
 
     private void OnTriggerEnter2D(Collider2D collision) {
-        GroundedEnemyMovement enemy = collision.GetComponent<GroundedEnemyMovement>();
-        if (enemy) {
+        DamageValues enemy = collision.GetComponent<DamageValues>();
+        if (enemy && gracePeriod <= 0) {
+            audioSource.Stop();
+            audioSource.PlayOneShot(damageTakenSound);
+            
+            OnDamageTaken?.Invoke();
             TakeDamage(enemy.damage);
+            gracePeriod = gracePeriodCooldown;
         }
     }
 
