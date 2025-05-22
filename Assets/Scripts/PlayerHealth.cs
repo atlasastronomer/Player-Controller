@@ -1,66 +1,75 @@
 using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour {
+    /** Audio */
     public AudioClip damageTakenSound;
     public AudioSource audioSource;
     
-    public int maxHealth = 5;
-    private int currentHealth;
+    /** Configuration */
+    [SerializeField] private int maxHealth;
+    private int _currentHealth;
+    private float _gracePeriod;
+    [SerializeField] public float gracePeriodCooldown = 0.75f;
+    public static event Action OnDamageTaken;
+    public static event Action OnDeath;
 
     public HealthUI healthUI;
-    private SpriteRenderer spriteRenderer;
-    
-    [SerializeField] public float gracePeriodCooldown = 0.75f;
-    private float gracePeriod = 0;
-    
-    public static event Action OnDamageTaken;
+    private SpriteRenderer _spriteRenderer;
+
+    /** Respawn Point */
+    private Vector3 _respawnPoint;
     
     private void Start()
     {
         audioSource = GetComponent<AudioSource>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        _spriteRenderer = GetComponent<SpriteRenderer>();
+        _respawnPoint = transform.position;
         
-        currentHealth = maxHealth;
+        _currentHealth = maxHealth;
         healthUI.SetMaxHearts(maxHealth);
         
-        gracePeriod = gracePeriodCooldown;
+        _gracePeriod = gracePeriodCooldown;
     }
 
     private void Update()
     {
-        gracePeriod -=  Time.deltaTime;
+        _gracePeriod -=  Time.deltaTime;
     }
 
     private void OnTriggerEnter2D(Collider2D collision) {
         DamageValues enemy = collision.GetComponent<DamageValues>();
-        if (enemy && gracePeriod <= 0) {
+        if (enemy && _gracePeriod <= 0) {
             audioSource.Stop();
             audioSource.PlayOneShot(damageTakenSound);
             
             OnDamageTaken?.Invoke();
-            TakeDamage(enemy.damage);
-            gracePeriod = gracePeriodCooldown;
+            TakeDamage(enemy._damage);
+            _gracePeriod = gracePeriodCooldown;
         }
     }
 
     private void TakeDamage(int damage = 1) {
-        currentHealth -= damage;
-        healthUI.updateHearts(currentHealth);
+        _currentHealth -= damage;
+        healthUI.updateHearts(_currentHealth);
         
         // Flash Red
         StartCoroutine(FlashRed());
-        if (currentHealth <= 0) {
-            SceneManager.LoadScene("GameOver");
+        
+        // Death Handling
+        if (_currentHealth <= 0) {
+            OnDeath?.Invoke();
+            transform.position = _respawnPoint;
+            _currentHealth = maxHealth;
+            healthUI.SetMaxHearts(maxHealth);
         }
     }
 
     private IEnumerator FlashRed() {
-        spriteRenderer.color = new Color(0.996078431372549f,0.4392156862745098f,0.4392156862745098f);
+        _spriteRenderer.color = new Color(0.996078431372549f,0.4392156862745098f,0.4392156862745098f);
 
         yield return new WaitForSeconds(0.2f);
-        spriteRenderer.color = Color.white;
+        _spriteRenderer.color = Color.white;
     }
 }

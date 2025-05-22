@@ -1,8 +1,8 @@
 using UnityEngine;
 
 public class Collector : MonoBehaviour {
-    public AudioClip coinCollectSound;
-    public AudioSource audioSource;
+    [SerializeField] private AudioClip coinCollectSound;
+    [SerializeField] private AudioSource audioSource;
     
     void Start() {
         audioSource = GetComponent<AudioSource>();

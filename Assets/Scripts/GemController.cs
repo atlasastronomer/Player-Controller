@@ -2,27 +2,36 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GemController : MonoBehaviour {
-    public static int gemsRemaining;
-
-    void Awake() {
+    private static int _totalGems;
+    private static int _gemsRemaining;
+    
+    private void Awake() {
         Gem.OnGemCollect += DecrementGems;
+        PlayerHealth.OnDeath += RespawnGems;
     }
-    void Start() {
-        gemsRemaining = transform.childCount;
-        Debug.Log(gemsRemaining);
+
+    private void Start() {
+        _totalGems = transform.childCount;
+        _gemsRemaining = _totalGems;
     }
 
     private void DecrementGems() {
-        gemsRemaining -= 1;
-        Debug.Log(gemsRemaining);
+        _gemsRemaining -= 1;
+        Debug.Log(_gemsRemaining);
 
-        if (gemsRemaining == 0) {
+        if (_gemsRemaining == 0) {
             SceneManager.LoadScene("WinScreen");
         }
     }
     
-    void OnDestroy() {
-        // Unsubscribe from the event to prevent multiple subscriptions
+    private void RespawnGems() {
+        _gemsRemaining = _totalGems;
+        foreach (Transform gem in transform) {
+            gem.gameObject.SetActive(true);
+        }
+    }
+
+    private void OnDestroy() {
         Gem.OnGemCollect -= DecrementGems;
     }
 }

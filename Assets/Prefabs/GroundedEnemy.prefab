@@ -4798,8 +4798,8 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 1391898349
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
@@ -4846,12 +4846,13 @@ GameObject:
   - component: {fileID: 3342045872715484673}
   - component: {fileID: 2271868831111834622}
   - component: {fileID: 1936099677420259706}
-  - component: {fileID: 3973852176704869505}
   - component: {fileID: 9195457027872599074}
+  - component: {fileID: 6984301413409875912}
+  - component: {fileID: 5579617895598274019}
+  - component: {fileID: 3973852176704869505}
   - component: {fileID: 4611271961165129338}
   - component: {fileID: 8974127547376667704}
   - component: {fileID: 4102555612062451829}
-  - component: {fileID: 6984301413409875912}
   m_Layer: 7
   m_Name: GroundedEnemy
   m_TagString: Untagged
@@ -4916,8 +4917,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 1391898349
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 170496218, guid: 67ac61236a5c74e04899d9b556dd3f23, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -5012,7 +5013,7 @@ MonoBehaviour:
   isJumping: 0
   isFalling: 0
   isDashing: 0
-  player: {fileID: 0}
+  player: {fileID: 7158311195719859359, guid: baaa7b72b27214d2e91e9b279a49bbe5, type: 3}
   horizontalInput: 0
   jumpingProximity: 5
   jumpCooldown: 1
@@ -5031,6 +5032,43 @@ MonoBehaviour:
   wallLeap: {x: 10, y: 15, z: 0}
   wallHop: {x: 8, y: 10, z: 0}
   terminalVelocity: 80
+--- !u!114 &9195457027872599074
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8964810744045358116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef9d0542307de4a57b4cffb5a8a16d5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &6984301413409875912
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8964810744045358116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acd44c24e2e1144c598028a528355fea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _damage: 1
+--- !u!114 &5579617895598274019
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8964810744045358116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: efb0ff0a661f04e86b158f5f50521ed8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!95 &3973852176704869505
 Animator:
   serializedVersion: 7
@@ -5053,18 +5091,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &9195457027872599074
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8964810744045358116}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef9d0542307de4a57b4cffb5a8a16d5c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!50 &4611271961165129338
 Rigidbody2D:
   serializedVersion: 5
@@ -5305,16 +5331,3 @@ TrailRenderer:
   m_Autodestruct: 0
   m_Emitting: 0
   m_ApplyActiveColorSpace: 1
---- !u!114 &6984301413409875912
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8964810744045358116}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: acd44c24e2e1144c598028a528355fea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damage: 1

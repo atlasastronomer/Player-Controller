@@ -4,9 +4,8 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider2D))]
 public class Controller2D : RaycastController
 {
-    
-    float maxClimbAngle = 46;
-    float maxDescendAngle = 46;
+    private readonly float _maxClimbAngle = 46;
+    private readonly float _maxDescendAngle = 48;
     
     // Booleans that tell us where our raycasts are detecting collision
     public struct CollisionInfo
@@ -57,7 +56,7 @@ public class Controller2D : RaycastController
         }
         HorizontalCollisions(ref displacement);
         
-        if (displacement.y < 0)
+        if (displacement.y <= 0)
         {
             DescendSlope(ref displacement);
         }
@@ -74,7 +73,7 @@ public class Controller2D : RaycastController
     }
 
     // Same logic from VerticalCollisions() applies here, except we go from x to y-axis
-    void HorizontalCollisions(ref Vector3 displacement)
+    private void HorizontalCollisions(ref Vector3 displacement)
     {
         float directionX;
         if (displacement.x == 0) {
@@ -115,7 +114,7 @@ public class Controller2D : RaycastController
                 
                 // We only proceed to climb the slope if the slope is less than or equal to
                 // the maximum angle at which we can climb
-                if (i == 0 && slopeAngle <= maxClimbAngle)
+                if (i == 0 && slopeAngle <= _maxClimbAngle)
                 {
                     if (collisions.descendingSlope)
                     {
@@ -132,7 +131,7 @@ public class Controller2D : RaycastController
                     displacement.x += distanceToSlopeStart * directionX;
                 }
 
-                if (!collisions.climbingSlope || slopeAngle > maxClimbAngle)
+                if (!collisions.climbingSlope || slopeAngle > _maxClimbAngle)
                 {
                     displacement.x = (hit.distance - skinWidth) * directionX;
                     rayLength = hit.distance;
@@ -148,7 +147,7 @@ public class Controller2D : RaycastController
         } 
     }
 
-    void VerticalCollisions(ref Vector3 displacement)
+    private void VerticalCollisions(ref Vector3 displacement)
     {
         float directionY = Mathf.Sign(displacement.y);
         // The length of our rays will be equal to our displacement plus the length of our skin width
@@ -225,8 +224,8 @@ public class Controller2D : RaycastController
         
         if (hit) {
             float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
-            if (slopeAngle != 0 && slopeAngle <= maxDescendAngle) {
-                if (Mathf.Sign(hit.normal.x) == directionX) {
+            if (slopeAngle != 0 && slopeAngle <= _maxDescendAngle) {
+                if (Mathf.Sign(hit.normal.x) == Mathf.Sign(collisions.facingDirection)) {
                     // This if statement checks for if we're actually touching the slope
                     // (since we're casting a ray with infinite length)
                     if (hit.distance - skinWidth <= Mathf.Tan(slopeAngle * Mathf.Deg2Rad) * Mathf.Abs(displacement.x)) {

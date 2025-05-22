@@ -4798,8 +4798,8 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 1391898349
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
@@ -4917,8 +4917,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 1391898349
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: -6809031913082364651, guid: dc31eabc82b6b49559fd6ccf5077dd02, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -5035,7 +5035,7 @@ MonoBehaviour:
   isJumping: 0
   isFalling: 0
   isDashing: 0
-  moveSpeed: 17
+  moveSpeed: 20
   accelerationTimeAirborne: 0.1
   accelerationTimeGrounded: 0.1
   dashSpeed: 30
@@ -5066,8 +5066,9 @@ MonoBehaviour:
   damageTakenSound: {fileID: 8300000, guid: 2f189c9514f814282baaf6da3463961a, type: 3}
   audioSource: {fileID: 0}
   maxHealth: 5
-  healthUI: {fileID: 0}
+  currentHealth: 0
   gracePeriodCooldown: 0.75
+  healthUI: {fileID: 0}
 --- !u!114 &9008094428521771463
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5163,8 +5164,8 @@ TrailRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 1391898349
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Time: 0.5
   m_PreviewTimeScale: 1

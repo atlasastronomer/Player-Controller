@@ -1,183 +1,219 @@
 using UnityEngine;
 using System.Collections;
-using Unity.VisualScripting;
 
 [RequireComponent(typeof(Controller2D))]
 
 public class PlayerMovement : MonoBehaviour
 {
     // States
-    public bool isGrounded;
-    public bool isJumping;
-    public bool isFalling;
-    private bool canJump;
-    private bool canWallJump;
-    private bool isTouchingCeiling;
-    private bool isWallSlidingRight;
-    private bool isWallSlidingLeft;
-    private bool canDash = true;
+    private bool _isGrounded;
+    public bool IsGrounded => _isGrounded;
+    
+    private bool _isJumping;
+    public bool IsJumping => _isJumping;
+    
+    private bool _isFalling;
+    public bool IsFalling => _isFalling;
+    
+    private bool _canJump;
+    private bool _canWallJump;
+    private bool _isTouchingCeiling;
+    private bool _isWallSlidingRight;
+    private bool _isWallSlidingLeft;
+    private bool _canDash = true;
     public bool isDashing;
     
     // Run  Variables
     [SerializeField] private float moveSpeed = 6;
     [SerializeField] private float accelerationTimeAirborne = 0.2f;
     [SerializeField] private float accelerationTimeGrounded = 0.1f;
-    private float displacementXSmoothing;
+    private float _displacementXSmoothing;
     
     // Dash Variables;
-    private float dashingTime = 0.2f;
+    private float _dashingTime = 0.2f;
     [SerializeField] private float dashSpeed = 34f;
     [SerializeField] private float dashCooldown = 0.5f;
-    [SerializeField] private float dashAccelerationTime = 0.0f;
+    [SerializeField] private float dashAccelerationTime;
     [SerializeField] private TrailRenderer tr;
     [SerializeField] private ParticleSystem ps;
 
     // Jump Variables
-    [SerializeField] private float jumpHeight = 4;
-    [SerializeField] private float timeToJumpApex = 0.4f;
+    [SerializeField] private float maxJumpHeight;
+    [SerializeField] private float timeToJumpApex;
     
-    private float jumpBufferWindow = 0.1f;
-    private float bufferWindow;
-    private float coyoteTimeWindow = 0.1f;
-    private float timeLastTouchedGround;
-    private float displacementYSmoothing;
+    private float _jumpBufferWindow = 0.1f;
+    private float _bufferWindow;
+    private float _coyoteTimeWindow = 0.1f;
+    private float _timeLastTouchedGround;
+    private float _displacementYSmoothing;
+    
+    // Fast Fall Variables
+    [SerializeField] private float gravityDown;
+    private float _gravityDown;
 
     // Wall Jump Variables
-    private float wallSlideDisplacementY;
-    private float wallSlideDeceleration = 0.1f;
+    private float _wallSlideDisplacementY;
+    private float _wallSlideDeceleration = 0.1f;
 
     [SerializeField] private Vector3 wallClimb;
     [SerializeField] private Vector3 wallLeap;
     [SerializeField] private Vector3 wallHop;
     
     // Gravity
-    private float gravity;
-    private float jumpForce;
-    [SerializeField] private float gravityMult = 0.5f; // jump released early
+    private float _gravity;
+    private float _jumpForce;
     [SerializeField] private float terminalVelocity = 80f; // max fall speed
 
+    // Update Variables
     public Vector3 displacement;
+    public Vector3 previousDisplacement;
 
-    Controller2D controller;
-
-    void Start() {
-        controller = GetComponent<Controller2D>();
+    Controller2D _controller;
+    
+    private void Start() {
+        _controller = GetComponent<Controller2D>();
         
-        gravity = -(2 * jumpHeight + 1) / Mathf.Pow(timeToJumpApex, 2);
+        _gravity = -2 * maxJumpHeight / Mathf.Pow(timeToJumpApex, 2);
+        _gravityDown = _gravity * gravityDown;
         
-        wallSlideDisplacementY = gravity / 10;
+        _jumpForce = 2 * maxJumpHeight / timeToJumpApex;
         
-        jumpForce = Mathf.Abs(gravity) * timeToJumpApex;
+        _wallSlideDisplacementY = _gravity / 10;
         
     }
 
-    void Update() {
+    private void Update() {
         // States
-        isGrounded = controller.collisions.below;
-        isTouchingCeiling = controller.collisions.above;
-        isWallSlidingRight = controller.collisions.right && displacement.y < 0 && !isGrounded;
-        isWallSlidingLeft = controller.collisions.left && displacement.y < 0 && !isGrounded;
+        _isGrounded = _controller.collisions.below;
+        _isTouchingCeiling = _controller.collisions.above;
+        _isWallSlidingRight = _controller.collisions.right && displacement.y < 0 && !_isGrounded;
+        _isWallSlidingLeft = _controller.collisions.left && displacement.y < 0 && !_isGrounded;
         
-        if (isTouchingCeiling || isGrounded) {
+        if (_isTouchingCeiling || _isGrounded) {
             displacement.y = 0;
         }
-        if (isGrounded) {
-            timeLastTouchedGround = 0;
-            isJumping = false;
-            isFalling = false;
+        if (_isGrounded) {
+            _timeLastTouchedGround = 0;
+            _isJumping = false;
+            _isFalling = false;
         }
-        if (isTouchingCeiling) { // prevents buffering multiple jumps in two-tile high passageway
-            bufferWindow = -1;
+        if (_isTouchingCeiling) { // prevents buffering multiple jumps in two-tile high passageway
+            _bufferWindow = -1;
         }
 
         // Jumping or Falling
-        if (!isGrounded && displacement.y > 0) {
-            isJumping = true;
-            isFalling = false;
+        if (!_isGrounded && displacement.y > 0) {
+            _isJumping = true;
+            _isFalling = false;
         }
-        if (!isGrounded && displacement.y <= 0) {
-            isJumping = false;
-            isFalling = true;
+        if (!_isGrounded && displacement.y <= 0) {
+            _isJumping = false;
+            _isFalling = true;
+            _gravity = -2 * maxJumpHeight / Mathf.Pow(timeToJumpApex, 2);
         }
         
         // Timers
-        bufferWindow -= Time.deltaTime;
-        timeLastTouchedGround += Time.deltaTime;
+        _bufferWindow -= Time.deltaTime;
+        _timeLastTouchedGround += Time.deltaTime;
         
         // Jump
         if (Input.GetKeyDown(KeyCode.Space)) {
-            bufferWindow = jumpBufferWindow;
+            _bufferWindow = _jumpBufferWindow;
             // Coyote Time
-            if (timeLastTouchedGround <= coyoteTimeWindow && displacement.y <= 0) {
-                displacement.y = jumpForce;
+            if (_timeLastTouchedGround <= _coyoteTimeWindow && displacement.y <= 0) {
+                Jump();
             }
             // Wall Jump
-            if (isWallSlidingLeft || isWallSlidingRight) {
+            if (_isWallSlidingLeft || _isWallSlidingRight) {
                 // Wall Climb
-                if (Mathf.Sign(Input.GetAxisRaw("Horizontal")) == Mathf.Sign(controller.collisions.facingDirection) && Input.GetAxisRaw("Horizontal") != 0) {
-                    displacement.x = -controller.collisions.facingDirection * wallClimb.x;
-                    displacement.y = wallClimb.y;
+                if (Mathf.Sign(Input.GetAxisRaw("Horizontal")) == Mathf.Sign(_controller.collisions.facingDirection) && Input.GetAxisRaw("Horizontal") != 0) {
+                    WallClimb();
                 }
                 // Wall Hop
                 else if (Input.GetAxisRaw("Horizontal") == 0) {
-                    displacement.x = -controller.collisions.facingDirection * wallHop.x;
-                    displacement.y = wallHop.y;
+                    WallHop();
                 }
                 // Wall Leap
-                else
-                {
-                    displacement.x = -controller.collisions.facingDirection * wallLeap.x;
-                    displacement.y = wallLeap.y;
+                else {
+                    WallLeap();
                 }
             }
         }
-            // Jump Buffer
-        if(isGrounded && bufferWindow >= 0) {
-            displacement.y = jumpForce;
+        // Jump Buffer
+        if(_isGrounded && _bufferWindow >= 0) {
+            Jump();
         }
-            // Jump Cut
-            if (Input.GetKeyUp(KeyCode.Space) && displacement.y > 0) {
-                displacement.y *= gravityMult;
-            }
+        
+        // Jump Cut
+        if (Input.GetKeyUp(KeyCode.Space) && _isJumping) {
+            _gravity = _gravityDown;
+        }
+    
+        Vector2 input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        float targetdisplacementX = input.x * moveSpeed;
         
         // Gravity
-        if ((isWallSlidingRight || isWallSlidingLeft)) {
-            displacement.y = Mathf.SmoothDamp(displacement.y, wallSlideDisplacementY, ref displacementYSmoothing,  wallSlideDeceleration);
+        if ((_isWallSlidingRight || _isWallSlidingLeft)) {
+            displacement.y = Mathf.SmoothDamp(displacement.y, _wallSlideDisplacementY, ref _displacementYSmoothing,  _wallSlideDeceleration);
         }
         else {
-            displacement.y += gravity * Time.deltaTime;
+            displacement.y += _gravity * Time.deltaTime;
             displacement.y = Mathf.Max(displacement.y, -terminalVelocity);
         }
         
         // Run
-        Vector2 input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-        
-        float targetdisplacementX = input.x * moveSpeed;
         if (isDashing) {
-            displacement.x = Mathf.SmoothDamp(displacement.x, dashSpeed * Mathf.Sign(controller.collisions.facingDirection), ref displacementXSmoothing, dashAccelerationTime);
+            displacement.x = Mathf.SmoothDamp(displacement.x, dashSpeed * Mathf.Sign(_controller.collisions.facingDirection), ref _displacementXSmoothing, dashAccelerationTime);
             displacement.y = 0f;
         }
         else {
-            displacement.x = Mathf.SmoothDamp(displacement.x, targetdisplacementX, ref displacementXSmoothing, (isGrounded) ? accelerationTimeGrounded : accelerationTimeAirborne);
+            displacement.x = Mathf.SmoothDamp(displacement.x, targetdisplacementX, ref _displacementXSmoothing, (_isGrounded) ? accelerationTimeGrounded : accelerationTimeAirborne);
         }
-        controller.Move(displacement * Time.deltaTime);
+        _controller.Move(displacement * Time.deltaTime);
         
         // Dash
-        if (Input.GetKey(KeyCode.Q) && canDash) {
+        if (Input.GetKey(KeyCode.Q) && _canDash) {
             StartCoroutine(Dash());
         }
     }
     
+    private void Jump() {
+        displacement.y = _jumpForce;
+        
+        _gravity = -2 * maxJumpHeight / Mathf.Pow(timeToJumpApex, 2);
+    }
+
+    private void WallClimb() {
+        displacement.x = -_controller.collisions.facingDirection * wallClimb.x;
+        
+        displacement.y = _jumpForce;
+        _gravity = -2 * maxJumpHeight / Mathf.Pow(timeToJumpApex, 2);
+    }
+
+    private void WallHop() {
+        displacement.x = -_controller.collisions.facingDirection * wallHop.x;
+        
+        displacement.y = _jumpForce / 2;
+        _gravity = -2 * maxJumpHeight / Mathf.Pow(timeToJumpApex, 2);
+    }
+    
+    private void WallLeap() {
+        displacement.x = -_controller.collisions.facingDirection * wallLeap.x;
+        
+        displacement.y = _jumpForce;
+        _gravity = -2 * maxJumpHeight / Mathf.Pow(timeToJumpApex, 2);
+    }
+    
     private IEnumerator Dash() {
-        canDash = false;
+        _canDash = false;
         isDashing = true;
         ps.Stop();
         tr.emitting = true;
-        yield return new WaitForSeconds(dashingTime);
+        yield return new WaitForSeconds(_dashingTime);
         ps.Play();
         tr.emitting = false;
         isDashing = false;
         yield return new WaitForSeconds(dashCooldown);
-        canDash = true;
+        _canDash = true;
     }
 }

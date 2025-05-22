@@ -2,28 +2,31 @@ using UnityEngine;
 
 public class Animation : MonoBehaviour
 {
-    private bool facingRight = true;
-    private Animator animator;
-    private PlayerMovement player;
+    private int _run = Animator.StringToHash("run");
+    private int _jump = Animator.StringToHash("jump");
+    private int _fall = Animator.StringToHash("fall");
+    private bool _facingRight = true;
+    private Animator _animator;
+    private PlayerMovement _player;
 
     public void Start()
     {
-        animator = GetComponent<Animator>();
-        player = GetComponent<PlayerMovement>();
+        _animator = GetComponent<Animator>();
+        _player = GetComponent<PlayerMovement>();
     }
     void Update()
     {
         // Flip sprite
         float inputHorizontal = Input.GetAxisRaw("Horizontal");
-        if (inputHorizontal > 0 && !facingRight || inputHorizontal < 0 && facingRight)
+        if (inputHorizontal > 0 && !_facingRight || inputHorizontal < 0 && _facingRight)
         {
             Flip();
         }
         
         // Animations
-        animator.SetBool("run", (inputHorizontal != 0 && player.isGrounded));
-        animator.SetBool("jump", player.isJumping);
-        animator.SetBool("fall", player.isFalling);
+        _animator.SetBool(_run, (inputHorizontal != 0 && _player.IsGrounded));
+        _animator.SetBool(_jump, _player.IsJumping);
+        _animator.SetBool(_fall, _player.IsFalling);
     }
     
     void Flip()
@@ -32,6 +35,6 @@ public class Animation : MonoBehaviour
         currentScale.x *= -1;
         gameObject.transform.localScale = currentScale;
 
-        facingRight = !facingRight;
+        _facingRight = !_facingRight;
     }
 }

@@ -6,6 +6,6 @@ public class Gem : MonoBehaviour, iItem {
     
     public void Collect() {
         OnGemCollect?.Invoke();
-        Destroy(gameObject);
+        gameObject.SetActive(false);
     }
 } 
