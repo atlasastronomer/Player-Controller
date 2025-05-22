@@ -25,5 +25,5 @@ As a creator at heart, I wanted to design a unique experience where computer sci
 
 Through this project, I continue to learn C#; practice good code structure and object oriented design; and apply finite state automation and enemy AI.
 
-Lastly, I end this off with a heartfelt thank you to GameCodeLibrary and Sebastian Lague for their amazing code-along tutorials. They have made learning Unity and C# so much easier and more enjoyable.
+Lastly, I end this off with a heartfelt thank you to GameCodeLibrary and Sebastian Lague for their amazing tutorials. They have made learning Unity and C# so much easier and more enjoyable.
 ‭
