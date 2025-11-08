@@ -5009,10 +5009,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2bbf9c07b947c4c1fad8e710bf1b0016, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isGrounded: 0
-  isJumping: 0
-  isFalling: 0
-  isDashing: 0
   player: {fileID: 7158311195719859359, guid: baaa7b72b27214d2e91e9b279a49bbe5, type: 3}
   horizontalInput: 0
   jumpingProximity: 5
@@ -5026,7 +5022,7 @@ MonoBehaviour:
   dashAccelerationTime: 0
   tr: {fileID: 0}
   ps: {fileID: 0}
-  jumpHeight: 2
+  maxJumpHeight: 4
   timeToJumpApex: 0.4
   wallClimb: {x: 7, y: 15, z: 0}
   wallLeap: {x: 10, y: 15, z: 0}
@@ -5056,7 +5052,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: acd44c24e2e1144c598028a528355fea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _damage: 1
+  damage: 1
 --- !u!114 &5579617895598274019
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5130,7 +5126,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 34059fc659c194fb9919330682df5cc9, type: 3}
   m_Resource: {fileID: 8300000, guid: 34059fc659c194fb9919330682df5cc9, type: 3}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 0.25
   m_Pitch: 1
   Loop: 0

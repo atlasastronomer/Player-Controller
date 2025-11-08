@@ -17,7 +17,7 @@ TagManager:
   - Player
   - Ground
   - Item
-  - 
+  - Killbox
   - 
   - 
   - 
@@ -50,6 +50,9 @@ TagManager:
     locked: 0
   - name: Game
     uniqueID: 1391898349
+    locked: 0
+  - name: Nuri
+    uniqueID: 1442105
     locked: 0
   m_RenderingLayers:
   - Default
