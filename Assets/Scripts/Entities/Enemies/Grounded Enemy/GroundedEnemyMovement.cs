@@ -138,7 +138,7 @@ public class GroundedEnemyMovement : MonoBehaviour {
         // Wall Jump
         if ((_isWallSlidingLeft || _isWallSlidingRight) && isBelowPlayer) {
             // Wall Climb
-            if (Mathf.Sign(horizontalInput) == Mathf.Sign(_controller.Collisions.FacingDirection) && horizontalInput != 0) {
+            if (Mathf.Sign(horizontalInput) == Mathf.Sign(_controller.Collisions.MovementDirection) && horizontalInput != 0) {
                 WallClimb();
             }
             // Wall Hop
@@ -164,7 +164,7 @@ public class GroundedEnemyMovement : MonoBehaviour {
         horizontalInput = (player.transform.position.x > transform.position.x) ? 1 : -1;
         float targetdisplacementX = horizontalInput * moveSpeed;
         if (_isDashing) {
-            _displacement.x = Mathf.SmoothDamp(_displacement.x, dashSpeed * Mathf.Sign(_controller.Collisions.FacingDirection), ref _displacementXSmoothing, dashAccelerationTime);
+            _displacement.x = Mathf.SmoothDamp(_displacement.x, dashSpeed * Mathf.Sign(_controller.Collisions.MovementDirection), ref _displacementXSmoothing, dashAccelerationTime);
             _displacement.y = 0f;
         }
         else {
@@ -183,17 +183,17 @@ public class GroundedEnemyMovement : MonoBehaviour {
     }
     
     private void WallClimb() {
-        _displacement.x = -_controller.Collisions.FacingDirection * wallClimb.x;
+        _displacement.x = -_controller.Collisions.MovementDirection * wallClimb.x;
         _displacement.y = _jumpForce;
     }
 
     private void WallHop() {
-        _displacement.x = -_controller.Collisions.FacingDirection * wallHop.x;
+        _displacement.x = -_controller.Collisions.MovementDirection * wallHop.x;
         _displacement.y = _jumpForce / 2;
     }
     
     private void WallLeap() {
-        _displacement.x = -_controller.Collisions.FacingDirection * wallLeap.x;
+        _displacement.x = -_controller.Collisions.MovementDirection * wallLeap.x;
         _displacement.y = _jumpForce;
     }
     
