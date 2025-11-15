@@ -2,7 +2,8 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class PlayerHealth : MonoBehaviour {
+public class PlayerHealth : MonoBehaviour 
+{
     /** Audio */
     [SerializeField] private AudioClip damageTakenSound;
     [SerializeField] private AudioSource damageTakenAudioSource;
@@ -20,6 +21,16 @@ public class PlayerHealth : MonoBehaviour {
     
     private Vector3 _respawnPoint;
     
+    private void OnEnable()
+    {
+        EnemyDetectionRaycastController.OnEnemyCollision += HandleEnemyCollision;
+    }
+
+    private void OnDisable()
+    {
+        EnemyDetectionRaycastController.OnEnemyCollision -= HandleEnemyCollision;
+    }
+    
     private void Start()
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
@@ -30,41 +41,66 @@ public class PlayerHealth : MonoBehaviour {
         
         _gracePeriod = gracePeriodCooldown;
     }
-
+    
     private void Update()
     {
-        _gracePeriod -=  Time.deltaTime;
+        _gracePeriod -= Time.deltaTime;
     }
     
-    private void OnTriggerStay2D(Collider2D collision) {
-        DamageValues enemy = collision.GetComponent<DamageValues>();
-        if (enemy && _gracePeriod <= 0) {
-            damageTakenAudioSource.Stop();
-            damageTakenAudioSource.PlayOneShot(damageTakenSound);
-            
-            OnDamageTaken?.Invoke();
-            TakeDamage(enemy.Damage);
-            _gracePeriod = gracePeriodCooldown;
+    private void HandleEnemyCollision(GameObject enemy)
+    {
+        if (_gracePeriod > 0) 
+        {
+            return;
         }
-    }
-    
-    private void OnTriggerEnter2D(Collider2D collision) {
-        if (collision.gameObject.layer == 11) {
-            _currentHealth = 0;
-            damageTakenAudioSource.PlayOneShot(damageTakenSound);
-            CheckDeath();
-        }
+
+        DamageValues damageValues = enemy.GetComponent<DamageValues>();
+        KnockbackValues knockbackValues = enemy.GetComponent<KnockbackValues>();
+
+        damageTakenAudioSource.Stop();
+        damageTakenAudioSource.PlayOneShot(damageTakenSound);
+        OnDamageTaken?.Invoke();
+
+        TakeDamage(damageValues.Damage);
+        ApplyKnockback(knockbackValues, enemy);
+
+        _gracePeriod = gracePeriodCooldown;
     }
 
-    private void TakeDamage(int damage = 1) {
+    
+    private void ApplyKnockback(KnockbackValues values, GameObject enemy)
+    {
+        // Calculate horizontal direction (left or right from enemy)
+        float horizontalDirection = Mathf.Sign(transform.position.x - enemy.transform.position.x);
+        
+        // If directly on top, default to facing direction or random
+        if (horizontalDirection == 0) 
+        {
+            horizontalDirection = 1f;
+        }
+        
+        // Create consistent knockback vector (45-degree angle)
+        Vector2 direction = new Vector2(horizontalDirection, 1f).normalized;
+
+        // Call PlayerMovement's knockback method - let it handle everything
+        GetComponent<PlayerMovement>().ApplyKnockback(
+            direction * values.KnockbackForce,
+            0.14f // knockback duration
+        );
+    }
+    
+    private void TakeDamage(int damage = 1) 
+    {
         _currentHealth -= damage;
         healthUI.updateHearts(_currentHealth);
         StartCoroutine(FlashRed());
         CheckDeath();
     }
 
-    private void CheckDeath() {
-        if (_currentHealth <= 0) {
+    private void CheckDeath() 
+    {
+        if (_currentHealth <= 0) 
+        {
             OnDeath?.Invoke();
             transform.position = _respawnPoint;
             _currentHealth = maxHealth;
@@ -72,8 +108,9 @@ public class PlayerHealth : MonoBehaviour {
         }
     }
 
-    private IEnumerator FlashRed() {
-        _spriteRenderer.color = new Color(0.996078431372549f,0.4392156862745098f,0.4392156862745098f);
+    private IEnumerator FlashRed() 
+    {
+        _spriteRenderer.color = new Color(0.996078431372549f, 0.4392156862745098f, 0.4392156862745098f);
 
         yield return new WaitForSeconds(0.2f);
         _spriteRenderer.color = Color.white;
