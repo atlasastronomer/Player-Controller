@@ -1,19 +1,26 @@
+using Entities.Player;
 using UnityEngine;
 
-public class ObjectRespawn : MonoBehaviour
+namespace Core.Respawn
 {
-    private Vector3 _respawnPosition;
+    public class ObjectRespawn : MonoBehaviour
+    {
+        private Vector3 _respawnPosition;
 
-    private void Start() {
-        _respawnPosition = transform.position;
-        PlayerHealth.OnDeath += Respawn;
-    }
-    
-    private void OnDestroy() {
-        PlayerHealth.OnDeath -= Respawn;
-    }
+        private void Start()
+        {
+            _respawnPosition = transform.position;
+            PlayerHealth.OnDeath += Respawn;
+        }
 
-    private void Respawn() {
-        transform.position = _respawnPosition;
+        private void OnDestroy()
+        {
+            PlayerHealth.OnDeath -= Respawn;
+        }
+
+        private void Respawn()
+        {
+            transform.position = _respawnPosition;
+        }
     }
 }

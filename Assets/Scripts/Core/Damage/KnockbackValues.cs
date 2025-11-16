@@ -1,8 +1,11 @@
 using UnityEngine;
 
-public class KnockbackValues : MonoBehaviour
+namespace Core.Damage
 {
-    [SerializeField] private float knockbackForce = 50f;
+    public class KnockbackValues : MonoBehaviour
+    {
+        [SerializeField] private float knockbackForce = 50f;
 
-    public float KnockbackForce => knockbackForce;
+        public float KnockbackForce => knockbackForce;
+    }
 }
