@@ -1,118 +1,123 @@
 using System;
 using System.Collections;
+using Core.Damage;
+using Core.Raycasts;
 using UnityEngine;
 
-public class PlayerHealth : MonoBehaviour 
+namespace Entities.Player
 {
-    /** Audio */
-    [SerializeField] private AudioClip damageTakenSound;
-    [SerializeField] private AudioSource damageTakenAudioSource;
+    public class PlayerHealth : MonoBehaviour 
+    {
+        /** Audio */
+        [SerializeField] private AudioClip damageTakenSound;
+        [SerializeField] private AudioSource damageTakenAudioSource;
     
-    /** Configuration */
-    [SerializeField] private int maxHealth;
-    private int _currentHealth;
-    private float _gracePeriod;
-    [SerializeField] public float gracePeriodCooldown = 0.75f;
-    public static event Action OnDamageTaken;
-    public static event Action OnDeath;
+        /** Configuration */
+        [SerializeField] private int maxHealth;
+        private int _currentHealth;
+        private float _gracePeriod;
+        [SerializeField] public float gracePeriodCooldown = 0.75f;
+        public static event Action OnDamageTaken;
+        public static event Action OnDeath;
 
-    public HealthUI healthUI;
-    private SpriteRenderer _spriteRenderer;
+        public HealthUI healthUI;
+        private SpriteRenderer _spriteRenderer;
     
-    private Vector3 _respawnPoint;
+        private Vector3 _respawnPoint;
     
-    private void OnEnable()
-    {
-        EnemyDetectionRaycastController.OnEnemyCollision += HandleEnemyCollision;
-    }
-
-    private void OnDisable()
-    {
-        EnemyDetectionRaycastController.OnEnemyCollision -= HandleEnemyCollision;
-    }
-    
-    private void Start()
-    {
-        _spriteRenderer = GetComponent<SpriteRenderer>();
-        _respawnPoint = transform.position;
-        
-        _currentHealth = maxHealth;
-        healthUI.SetMaxHearts(maxHealth);
-        
-        _gracePeriod = gracePeriodCooldown;
-    }
-    
-    private void Update()
-    {
-        _gracePeriod -= Time.deltaTime;
-    }
-    
-    private void HandleEnemyCollision(GameObject enemy)
-    {
-        if (_gracePeriod > 0) 
+        private void OnEnable()
         {
-            return;
+            EnemyDetectionRaycastController.OnEnemyCollision += HandleEnemyCollision;
         }
 
-        DamageValues damageValues = enemy.GetComponent<DamageValues>();
-        KnockbackValues knockbackValues = enemy.GetComponent<KnockbackValues>();
-
-        damageTakenAudioSource.Stop();
-        damageTakenAudioSource.PlayOneShot(damageTakenSound);
-        OnDamageTaken?.Invoke();
-
-        TakeDamage(damageValues.Damage);
-        ApplyKnockback(knockbackValues, enemy);
-
-        _gracePeriod = gracePeriodCooldown;
-    }
-
-    
-    private void ApplyKnockback(KnockbackValues values, GameObject enemy)
-    {
-        // Calculate horizontal direction (left or right from enemy)
-        float horizontalDirection = Mathf.Sign(transform.position.x - enemy.transform.position.x);
-        
-        // If directly on top, default to facing direction or random
-        if (horizontalDirection == 0) 
+        private void OnDisable()
         {
-            horizontalDirection = 1f;
+            EnemyDetectionRaycastController.OnEnemyCollision -= HandleEnemyCollision;
         }
-        
-        // Create consistent knockback vector (45-degree angle)
-        Vector2 direction = new Vector2(horizontalDirection, 1f).normalized;
-
-        // Call PlayerMovement's knockback method - let it handle everything
-        GetComponent<PlayerMovement>().ApplyKnockback(
-            direction * values.KnockbackForce,
-            0.14f // knockback duration
-        );
-    }
     
-    private void TakeDamage(int damage = 1) 
-    {
-        _currentHealth -= damage;
-        healthUI.updateHearts(_currentHealth);
-        StartCoroutine(FlashRed());
-        CheckDeath();
-    }
-
-    private void CheckDeath() 
-    {
-        if (_currentHealth <= 0) 
+        private void Start()
         {
-            OnDeath?.Invoke();
-            transform.position = _respawnPoint;
+            _spriteRenderer = GetComponent<SpriteRenderer>();
+            _respawnPoint = transform.position;
+        
             _currentHealth = maxHealth;
             healthUI.SetMaxHearts(maxHealth);
+        
+            _gracePeriod = gracePeriodCooldown;
         }
-    }
+    
+        private void Update()
+        {
+            _gracePeriod -= Time.deltaTime;
+        }
+    
+        private void HandleEnemyCollision(GameObject enemy)
+        {
+            if (_gracePeriod > 0) 
+            {
+                return;
+            }
 
-    private IEnumerator FlashRed() 
-    {
-        _spriteRenderer.color = new Color(0.996078431372549f, 0.4392156862745098f, 0.4392156862745098f);
+            DamageValues damageValues = enemy.GetComponent<DamageValues>();
+            KnockbackValues knockbackValues = enemy.GetComponent<KnockbackValues>();
 
-        yield return new WaitForSeconds(0.2f);
-        _spriteRenderer.color = Color.white;
+            damageTakenAudioSource.Stop();
+            damageTakenAudioSource.PlayOneShot(damageTakenSound);
+            OnDamageTaken?.Invoke();
+
+            TakeDamage(damageValues.Damage);
+            ApplyKnockback(knockbackValues, enemy);
+
+            _gracePeriod = gracePeriodCooldown;
+        }
+
+    
+        private void ApplyKnockback(KnockbackValues values, GameObject enemy)
+        {
+            // Calculate horizontal direction (left or right from enemy)
+            float horizontalDirection = Mathf.Sign(transform.position.x - enemy.transform.position.x);
+        
+            // If directly on top, default to facing direction or random
+            if (horizontalDirection == 0) 
+            {
+                horizontalDirection = 1f;
+            }
+        
+            // Create consistent knockback vector (45-degree angle)
+            Vector2 direction = new Vector2(horizontalDirection, 1f).normalized;
+
+            // Call PlayerMovement's knockback method - let it handle everything
+            GetComponent<PlayerMovement>().ApplyKnockback(
+                direction * values.KnockbackForce,
+                0.14f // knockback duration
+            );
+        }
+    
+        private void TakeDamage(int damage = 1) 
+        {
+            _currentHealth -= damage;
+            healthUI.updateHearts(_currentHealth);
+            StartCoroutine(FlashRed());
+            CheckDeath();
+        }
+
+        private void CheckDeath() 
+        {
+            if (_currentHealth <= 0) 
+            {
+                OnDeath?.Invoke();
+                transform.position = _respawnPoint;
+                _currentHealth = maxHealth;
+                healthUI.SetMaxHearts(maxHealth);
+            }
+        }
+
+        private IEnumerator FlashRed() 
+        {
+            _spriteRenderer.color = new Color(0.996078431372549f, 0.4392156862745098f, 0.4392156862745098f);
+
+            yield return new WaitForSeconds(0.2f);
+            _spriteRenderer.color = Color.white;
+        }
     }
 }

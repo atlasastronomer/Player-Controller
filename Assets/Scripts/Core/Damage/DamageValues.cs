@@ -1,7 +1,11 @@
 using UnityEngine;
 
-public class DamageValues : MonoBehaviour {
-    [SerializeField] private int damage;
+namespace Core.Damage
+{
+    public class DamageValues : MonoBehaviour
+    {
+        [SerializeField] private int damage;
 
-    public int Damage => damage;
+        public int Damage => damage;
+    }
 }
