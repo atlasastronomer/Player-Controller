@@ -4932,9 +4932,9 @@ GameObject:
   - component: {fileID: 2903121405157730315}
   - component: {fileID: 8025612665341473679}
   - component: {fileID: 8146934119012537712}
-  - component: {fileID: 6227185184614381351}
   - component: {fileID: 2579383173894387016}
   - component: {fileID: 1639703623880114930}
+  - component: {fileID: 6227185184614381351}
   m_Layer: 0
   m_Name: Nuri
   m_TagString: Untagged
@@ -5083,6 +5083,39 @@ MonoBehaviour:
   collider: {fileID: 8025612665341473679}
   horizontalRaySpacing: 0.15833333
   verticalRaySpacing: 0.15833333
+--- !u!114 &2579383173894387016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7374307835155748206}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85ef2cb8ff6a94cb0a65bc2d55feecc1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 1518944993502420753, guid: 28f6d69ca80ee46229e4dabb08047dbc, type: 3}
+  orbitRadiusX: 1.21
+  orbitRadiusY: 0.2
+  orbitSpeed: 3
+  floatAmplitude: 0
+  floatFrequency: 1
+  minCatchUpSpeed: 3
+  maxCatchUpSpeed: 15
+  catchUpDistanceThreshold: 2
+--- !u!114 &1639703623880114930
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7374307835155748206}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: efb0ff0a661f04e86b158f5f50521ed8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!96 &6227185184614381351
 TrailRenderer:
   serializedVersion: 3
@@ -5202,36 +5235,3 @@ TrailRenderer:
   m_Autodestruct: 0
   m_Emitting: 0
   m_ApplyActiveColorSpace: 1
---- !u!114 &2579383173894387016
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7374307835155748206}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 85ef2cb8ff6a94cb0a65bc2d55feecc1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  player: {fileID: 1518944993502420753, guid: e9a25462dabc945a4bb37770b59a053d, type: 3}
-  orbitRadiusX: 1.21
-  orbitRadiusY: 0.2
-  orbitSpeed: 3
-  floatAmplitude: 0
-  floatFrequency: 1
-  minCatchUpSpeed: 3
-  maxCatchUpSpeed: 15
-  catchUpDistanceThreshold: 2
---- !u!114 &1639703623880114930
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7374307835155748206}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: efb0ff0a661f04e86b158f5f50521ed8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

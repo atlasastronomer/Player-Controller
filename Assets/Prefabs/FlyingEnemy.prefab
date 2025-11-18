@@ -329,7 +329,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9193380abc0604d5ea2165794b2dd946, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 1518944993502420753, guid: e9a25462dabc945a4bb37770b59a053d, type: 3}
+  player: {fileID: 1518944993502420753, guid: 28f6d69ca80ee46229e4dabb08047dbc, type: 3}
   chaseDistance: 20
   moveSpeed: 6
   accelerationTime: 0.2

@@ -4851,12 +4851,12 @@ GameObject:
   - component: {fileID: 1936099677420259706}
   - component: {fileID: 9195457027872599074}
   - component: {fileID: 6984301413409875912}
+  - component: {fileID: 4677782145144401213}
   - component: {fileID: 5579617895598274019}
   - component: {fileID: 3973852176704869505}
   - component: {fileID: 4611271961165129338}
   - component: {fileID: 8974127547376667704}
   - component: {fileID: 4102555612062451829}
-  - component: {fileID: 4677782145144401213}
   m_Layer: 7
   m_Name: GroundedEnemy
   m_TagString: Untagged
@@ -5016,14 +5016,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2bbf9c07b947c4c1fad8e710bf1b0016, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 7158311195719859359, guid: baaa7b72b27214d2e91e9b279a49bbe5, type: 3}
-  horizontalInput: 0
+  player: {fileID: 1518944993502420753, guid: 28f6d69ca80ee46229e4dabb08047dbc, type: 3}
   jumpingProximity: 5
-  jumpCooldown: 1
   damage: 1
   moveSpeed: 10
   accelerationTimeAirborne: 0.25
   accelerationTimeGrounded: 0.25
+  dashingTime: 0.2
   dashSpeed: 30
   dashCooldown: 1
   dashAccelerationTime: 0
@@ -5060,6 +5059,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 1
+--- !u!114 &4677782145144401213
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8964810744045358116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16a61d5a6c0045a0952c9abf762adbdd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KnockbackValues
+  knockbackForce: 15
 --- !u!114 &5579617895598274019
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5337,17 +5349,3 @@ TrailRenderer:
   m_Autodestruct: 0
   m_Emitting: 0
   m_ApplyActiveColorSpace: 1
---- !u!114 &4677782145144401213
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8964810744045358116}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 16a61d5a6c0045a0952c9abf762adbdd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::KnockbackValues
-  xKnockback: 50
-  yKnockback: 50
