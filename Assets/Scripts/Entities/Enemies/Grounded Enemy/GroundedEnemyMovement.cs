@@ -30,7 +30,8 @@ namespace Entities.Enemies.Grounded_Enemy
         [SerializeField] GameObject player;
 
         // AI Variables
-        public float horizontalInput;
+        private float _horizontalInput;
+        public float HorizontalInput => _horizontalInput;
         private float _verticalInput;
         private bool _enemyJumped;
         private bool _enemyDashed = false;
@@ -150,13 +151,13 @@ namespace Entities.Enemies.Grounded_Enemy
             if ((_isWallSlidingLeft || _isWallSlidingRight) && isBelowPlayer)
             {
                 // Wall Climb
-                if (Mathf.Approximately(Mathf.Sign(horizontalInput), Mathf.Sign(_controller.Collisions.MovementDirection)) &&
-                    horizontalInput != 0)
+                if (Mathf.Approximately(Mathf.Sign(_horizontalInput), Mathf.Sign(_controller.Collisions.MovementDirection)) &&
+                    _horizontalInput != 0)
                 {
                     WallClimb();
                 }
                 // Wall Hop
-                else if (horizontalInput == 0)
+                else if (_horizontalInput == 0)
                 {
                     WallHop();
                 }
@@ -180,8 +181,8 @@ namespace Entities.Enemies.Grounded_Enemy
             }
 
             // Run
-            horizontalInput = (player.transform.position.x > transform.position.x) ? 1 : -1;
-            float targetDisplacementX = horizontalInput * moveSpeed;
+            _horizontalInput = (player.transform.position.x > transform.position.x) ? 1 : -1;
+            float targetDisplacementX = _horizontalInput * moveSpeed;
             if (_isDashing)
             {
                 _displacement.x = Mathf.SmoothDamp(_displacement.x,

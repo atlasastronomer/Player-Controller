@@ -20,13 +20,13 @@ namespace Entities.Enemies.Grounded_Enemy
         void Update()
         {
             // Flip sprite;
-            if (_enemy.horizontalInput > 0 && !_facingRight || _enemy.horizontalInput < 0 && _facingRight)
+            if (_enemy.HorizontalInput > 0 && !_facingRight || _enemy.HorizontalInput < 0 && _facingRight)
             {
                 Flip();
             }
 
             // Animations
-            _animator.SetBool(Run, _enemy.horizontalInput != 0 && _enemy.IsGrounded);
+            _animator.SetBool(Run, _enemy.HorizontalInput != 0 && _enemy.IsGrounded);
             _animator.SetBool(Jump, _enemy.IsJumping);
             _animator.SetBool(Fall, _enemy.IsFalling);
         }
