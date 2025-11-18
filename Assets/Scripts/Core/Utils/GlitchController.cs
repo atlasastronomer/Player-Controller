@@ -45,7 +45,7 @@ namespace Core.Utils
 
         private void SetGlitchTimer()
         {
-            _glitchEffectTime = playerHealth.gracePeriodCooldown;
+            _glitchEffectTime = playerHealth.GracePeriodCooldown;
         }
 
         void Update()
