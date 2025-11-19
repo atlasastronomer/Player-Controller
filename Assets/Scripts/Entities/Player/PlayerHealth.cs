@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Core.Damage;
+using Core.Movement;
 using Core.Raycasts;
 using UnityEngine;
 
@@ -8,6 +9,8 @@ namespace Entities.Player
 {
     public class PlayerHealth : MonoBehaviour 
     {
+        [SerializeField] private LayerMask killBoxMask;
+            
         /** Audio */
         [SerializeField] private AudioClip damageTakenSound;
         [SerializeField] private AudioSource damageTakenAudioSource;
@@ -16,13 +19,15 @@ namespace Entities.Player
         [SerializeField] private int maxHealth;
         private int _currentHealth;
         private float _gracePeriod;
-        [SerializeField] public float gracePeriodCooldown = 0.75f;
+        
+        [SerializeField] private float gracePeriodCooldown = 0.75f;
+        public float GracePeriodCooldown => gracePeriodCooldown;
+            
         public static event Action OnDamageTaken;
         public static event Action OnDeath;
 
         public HealthUI healthUI;
         private SpriteRenderer _spriteRenderer;
-    
         private Vector3 _respawnPoint;
     
         private void OnEnable()
@@ -50,7 +55,17 @@ namespace Entities.Player
         {
             _gracePeriod -= Time.deltaTime;
         }
-    
+
+        private void OnTriggerEnter2D(Collider2D other)
+        {
+            if ((killBoxMask.value & (1 << other.transform.gameObject.layer)) > 0)
+            {
+                damageTakenAudioSource.Stop();
+                damageTakenAudioSource.PlayOneShot(damageTakenSound);
+                KillPlayer();
+            }
+        }
+        
         private void HandleEnemyCollision(GameObject enemy)
         {
             if (_gracePeriod > 0) 
@@ -101,6 +116,13 @@ namespace Entities.Player
             CheckDeath();
         }
 
+        private void KillPlayer()
+        {
+            _currentHealth = 0;
+            healthUI.SetMaxHearts(0);
+            CheckDeath();
+        }
+        
         private void CheckDeath() 
         {
             if (_currentHealth <= 0) 
