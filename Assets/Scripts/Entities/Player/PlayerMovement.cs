@@ -1,6 +1,7 @@
 using System.Collections;
 using Core.Movement;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Entities.Player
 {
@@ -17,8 +18,15 @@ namespace Entities.Player
         private bool _isFalling;
         public bool IsFalling => _isFalling;
 
-        private bool IsKnockbacked { get; set; }
+        private bool IsKnockedbacked { get; set; }
 
+        [SerializeField] private int maxMidairJumps = 2;
+        private int _currentMidairJumps;
+        
+        [SerializeField] private int maxMidairDashes = 1;
+        private int _currentMidairDashes;
+
+        private bool _canSwitchDirections;
         private bool _canJump;
         private bool _canWallJump;
         private bool _isTouchingCeiling;
@@ -98,7 +106,7 @@ namespace Entities.Player
 
         private void Update()
         {
-            if (IsKnockbacked)
+            if (IsKnockedbacked)
             {
                 _knockbackVelocity.y -= knockbackGravity * Time.deltaTime;
 
@@ -121,15 +129,17 @@ namespace Entities.Player
             if (_isGrounded)
             {
                 _timeLastTouchedGround = 0;
+                _currentMidairJumps = 0;
+                _currentMidairDashes = 0;
                 _isJumping = false;
                 _isFalling = false;
             }
-
+            
             if (_isTouchingCeiling)
             {
                 _bufferWindow = -1;
             }
-
+            
             // Jumping or Falling
             if (!_isGrounded && displacement.y > 0)
             {
@@ -156,6 +166,11 @@ namespace Entities.Player
                 if (_timeLastTouchedGround <= CoyoteTimeWindow && displacement.y <= 0)
                 {
                     Jump();
+                }
+                else if (_currentMidairJumps < maxMidairJumps)
+                {
+                    Jump();
+                    _currentMidairJumps++;
                 }
 
                 // Wall Jump
@@ -205,6 +220,8 @@ namespace Entities.Player
             {
                 displacement.y = Mathf.SmoothDamp(displacement.y, _wallSlideDisplacementY, ref _displacementYSmoothing,
                     WallSlideDeceleration);
+                _currentMidairJumps = 0;
+                _currentMidairDashes = 0;
             }
             else
             {
@@ -228,9 +245,10 @@ namespace Entities.Player
             _controller.Move(displacement * Time.deltaTime);
 
             // Dash
-            if (Input.GetKey(KeyCode.Q) && _canDash)
+            if (Input.GetKey(KeyCode.Q) && _canDash && _currentMidairDashes < maxMidairDashes)
             {
                 StartCoroutine(Dash());
+                _currentMidairDashes++;
             }
 
             // Trail
@@ -249,11 +267,11 @@ namespace Entities.Player
         {
             StartCoroutine(KnockbackCoroutine(knockbackForce, duration));
         }
-
+        
         private IEnumerator KnockbackCoroutine(Vector3 knockbackForce, float duration)
         {
-            Debug.Log($"Knockback started: force={knockbackForce}, currentDisplacement={displacement}");
-            IsKnockbacked = true;
+            // Debug.Log($"Knockback started: force={knockbackForce}, currentDisplacement={displacement}");
+            IsKnockedbacked = true;
 
             _knockbackVelocity = knockbackForce;
 
@@ -261,8 +279,8 @@ namespace Entities.Player
 
             yield return new WaitForSeconds(duration);
 
-            Debug.Log($"Knockback ended: finalVelocity={_knockbackVelocity}, isGrounded={_isGrounded}");
-            IsKnockbacked = false;
+            // Debug.Log($"Knockback ended: finalVelocity={_knockbackVelocity}, isGrounded={_isGrounded}");
+            IsKnockedbacked = false;
 
             displacement = _knockbackVelocity;
         }
@@ -277,24 +295,27 @@ namespace Entities.Player
         private void WallClimb()
         {
             displacement.x = -_controller.Collisions.MovementDirection * wallClimb.x;
-
             displacement.y = _jumpForce;
+            
             _gravity = -2 * maxJumpHeight / Mathf.Pow(timeToJumpApex, 2);
         }
-
+        
         private void WallHop()
         {
             displacement.x = -_controller.Collisions.MovementDirection * wallHop.x;
-
             displacement.y = _jumpForce / 2;
+            
+            _isDashing = false;
+            _canDash = true;
+            
             _gravity = -2 * maxJumpHeight / Mathf.Pow(timeToJumpApex, 2);
         }
-
+        
         private void WallLeap()
         {
             displacement.x = -_controller.Collisions.MovementDirection * wallLeap.x;
-
             displacement.y = _jumpForce;
+            
             _gravity = -2 * maxJumpHeight / Mathf.Pow(timeToJumpApex, 2);
         }
 
