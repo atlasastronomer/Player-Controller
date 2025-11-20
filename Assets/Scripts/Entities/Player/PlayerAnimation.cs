@@ -20,7 +20,7 @@ namespace Entities.Player
         void Update()
         {
             float inputHorizontal = Input.GetAxisRaw("Horizontal");
-            if (inputHorizontal > 0 && !_facingRight || inputHorizontal < 0 && _facingRight)
+            if (!_player.IsDashing && (inputHorizontal > 0 && !_facingRight || inputHorizontal < 0 && _facingRight))
             {
                 Flip();
             }

@@ -26,6 +26,9 @@ namespace Entities.Player
         [SerializeField] private int maxMidairDashes = 1;
         private int _currentMidairDashes;
 
+        private bool _isDashing;
+        public bool IsDashing => _isDashing;
+        
         private bool _canSwitchDirections;
         private bool _canJump;
         private bool _canWallJump;
@@ -33,7 +36,7 @@ namespace Entities.Player
         private bool _isWallSlidingRight;
         private bool _isWallSlidingLeft;
         private bool _canDash = true;
-        private bool _isDashing;
+        private int _dashDirection;
 
         // Run  Variables
         [SerializeField] private float moveSpeed = 6;
@@ -52,6 +55,7 @@ namespace Entities.Player
         [SerializeField] private AudioClip dashSound;
         [SerializeField] private AudioSource dashAudioSource;
 
+        private Coroutine _dashCoroutine;
         private ParticleSystem.EmissionModule _psEmission;
 
         // Jump Variables
@@ -140,13 +144,28 @@ namespace Entities.Player
                 _bufferWindow = -1;
             }
             
-            // Jumping or Falling
+            // Cancel dash if dashing into a wall
+            if (_isDashing && ((_dashDirection > 0 && _controller.Collisions.Right) || (_dashDirection < 0 && _controller.Collisions.Left)))
+            {
+                _isDashing = false;
+                if (_dashCoroutine != null)
+                {
+                    StopCoroutine(_dashCoroutine);
+                    _dashCoroutine = null;
+                }
+                _canDash = true;
+                ps.Play();
+                tr.emitting = false;
+            }
+            
+            // Jumping
             if (!_isGrounded && displacement.y > 0)
             {
                 _isJumping = true;
                 _isFalling = false;
             }
 
+            // Falling
             if (!_isGrounded && displacement.y <= 0)
             {
                 _isJumping = false;
@@ -161,8 +180,21 @@ namespace Entities.Player
             // Jump
             if (Input.GetKeyDown(KeyCode.Space))
             {
+                if (_isDashing)
+                {
+                    _isDashing = false;
+                    if (_dashCoroutine != null)
+                    {
+                        StopCoroutine(_dashCoroutine);
+                        _dashCoroutine = null;
+                    }
+                    _canDash = true;
+                    ps.Play();
+                    tr.emitting = false;
+                }
+                
                 _bufferWindow = JumpBufferWindow;
-                // Coyote Time
+                // Accounts for regularly jumping off the ground and coyote time
                 if (_timeLastTouchedGround <= CoyoteTimeWindow && displacement.y <= 0)
                 {
                     Jump();
@@ -221,7 +253,10 @@ namespace Entities.Player
                 displacement.y = Mathf.SmoothDamp(displacement.y, _wallSlideDisplacementY, ref _displacementYSmoothing,
                     WallSlideDeceleration);
                 _currentMidairJumps = 0;
-                _currentMidairDashes = 0;
+                if (!_isDashing)
+                {
+                    _currentMidairDashes = 0;
+                }
             }
             else
             {
@@ -232,7 +267,7 @@ namespace Entities.Player
             // Run
             if (_isDashing)
             {
-                displacement.x = Mathf.SmoothDamp(displacement.x, dashSpeed * _facingDirection, ref _displacementXSmoothing,
+                displacement.x = Mathf.SmoothDamp(displacement.x, dashSpeed * _dashDirection, ref _displacementXSmoothing,
                     dashAccelerationTime);
                 displacement.y = 0f;
             }
@@ -245,9 +280,9 @@ namespace Entities.Player
             _controller.Move(displacement * Time.deltaTime);
 
             // Dash
-            if (Input.GetKey(KeyCode.Q) && _canDash && _currentMidairDashes < maxMidairDashes)
+            if (Input.GetKeyDown(KeyCode.Q) && _canDash && _currentMidairDashes < maxMidairDashes)
             {
-                StartCoroutine(Dash());
+                _dashCoroutine = StartCoroutine(Dash());
                 _currentMidairDashes++;
             }
 
@@ -270,8 +305,20 @@ namespace Entities.Player
         
         private IEnumerator KnockbackCoroutine(Vector3 knockbackForce, float duration)
         {
-            // Debug.Log($"Knockback started: force={knockbackForce}, currentDisplacement={displacement}");
             IsKnockedbacked = true;
+
+            if (_isDashing)
+            {
+                _isDashing = false;
+                if (_dashCoroutine != null)
+                {
+                    StopCoroutine(_dashCoroutine);
+                    _dashCoroutine = null;
+                }
+                _canDash = true;
+                ps.Play();
+                tr.emitting = false;
+            }
 
             _knockbackVelocity = knockbackForce;
 
@@ -279,7 +326,6 @@ namespace Entities.Player
 
             yield return new WaitForSeconds(duration);
 
-            // Debug.Log($"Knockback ended: finalVelocity={_knockbackVelocity}, isGrounded={_isGrounded}");
             IsKnockedbacked = false;
 
             displacement = _knockbackVelocity;
@@ -323,6 +369,7 @@ namespace Entities.Player
         {
             _canDash = false;
             _isDashing = true;
+            _dashDirection = _facingDirection;
             ps.Stop();
             tr.emitting = true;
             dashAudioSource.PlayOneShot(dashSound);
