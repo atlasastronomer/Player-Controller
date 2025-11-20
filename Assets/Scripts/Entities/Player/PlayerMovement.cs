@@ -1,7 +1,6 @@
 using System.Collections;
 using Core.Movement;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Entities.Player
 {
