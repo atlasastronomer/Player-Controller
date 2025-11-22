@@ -4853,6 +4853,7 @@ GameObject:
   - component: {fileID: 6984301413409875912}
   - component: {fileID: 4677782145144401213}
   - component: {fileID: 5579617895598274019}
+  - component: {fileID: 2358454328206043443}
   - component: {fileID: 3973852176704869505}
   - component: {fileID: 4611271961165129338}
   - component: {fileID: 8974127547376667704}
@@ -5084,6 +5085,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efb0ff0a661f04e86b158f5f50521ed8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2358454328206043443
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8964810744045358116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 400f2dccdee44aee8a5ad2071d24350b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Entities.Enemies.EnemyHealth
+  maxHealth: 3
+  knockbackForce: 10
+  knockbackDuration: 0.2
+  spriteRenderer: {fileID: 0}
+  damageColor: {r: 1, g: 0, b: 0, a: 1}
+  damageFlashDuration: 0.1
+  deathEffectPrefab: {fileID: 0}
+  deathSound: {fileID: 0}
+  audioSource: {fileID: 0}
 --- !u!95 &3973852176704869505
 Animator:
   serializedVersion: 7

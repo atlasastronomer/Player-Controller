@@ -1,4 +1,3 @@
-using System;
 using Core.Movement;
 using Entities.Player;
 using UnityEngine;
@@ -89,9 +88,7 @@ namespace Entities.Nuri
         private void HandlePlayerDeath()
         {
             _isResetting = true;
-
-            transform.position = transform.position;
-
+            
             _time = 0f;
         }
     }

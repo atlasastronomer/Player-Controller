@@ -40362,6 +40362,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -3194799050607315783, guid: 6444ae81697c242ca9a74eaee946877f, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 5146023274564109717}
+    - target: {fileID: -3194799050607315783, guid: 6444ae81697c242ca9a74eaee946877f, type: 3}
+      propertyPath: targetingRange
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: -3194799050607315783, guid: 6444ae81697c242ca9a74eaee946877f, type: 3}
+      propertyPath: enemyLayer.m_Bits
+      value: 128
+      objectReference: {fileID: 0}
     - target: {fileID: 501848672647001759, guid: 6444ae81697c242ca9a74eaee946877f, type: 3}
       propertyPath: m_LocalPosition.x
       value: -52.24
