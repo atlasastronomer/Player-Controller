@@ -22,7 +22,7 @@ namespace Entities.Nuri
         {
             _currentTarget = FindNearestEnemy();
 
-            if (Input.GetKey(KeyCode.E) && Time.time >= _lastAttackTime + attackCooldown && _currentTarget != null)
+            if (Input.GetKey(KeyCode.E) && Time.time >= _lastAttackTime + attackCooldown)
             {
                 ShootProjectile();
                 _lastAttackTime = Time.time;
@@ -32,12 +32,6 @@ namespace Entities.Nuri
         private GameObject FindNearestEnemy()
         {
             Collider2D[] enemies = Physics2D.OverlapCircleAll(player.transform.position, targetingRange, enemyLayer);
-            
-            Debug.Log($"Found {enemies.Length} enemies within range");
-            foreach (var enemy in enemies)
-            {
-                Debug.Log($"Enemy found: {enemy.name} on layer {LayerMask.LayerToName(enemy.gameObject.layer)}");
-            }
             
             if (enemies.Length == 0)
             {

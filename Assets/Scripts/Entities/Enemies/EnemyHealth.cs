@@ -38,6 +38,11 @@ namespace Entities.Enemies
 
         public void TakeDamage(int damage)
         {
+            TakeDamage(damage, Vector3.zero);
+        }
+        
+        public void TakeDamage(int damage, Vector3 knockbackDirection)
+        {
             if (_isInvulnerable)
             {
                 return;
@@ -45,14 +50,37 @@ namespace Entities.Enemies
 
             _currentHealth -= damage;
             
-            if (_spriteRenderer)
+            if (_spriteRenderer != null)
             {
                 StartCoroutine(DamageFlash());
+            }
+            
+            if (knockbackDirection != Vector3.zero)
+            {
+                ApplyKnockback(knockbackDirection);
             }
 
             if (_currentHealth <= 0)
             {
                 Die();
+            }
+        }
+        
+        private void ApplyKnockback(Vector3 direction)
+        {
+            var groundedMovement = GetComponent<Entities.Enemies.Grounded_Enemy.GroundedEnemyMovement>();
+            if (groundedMovement != null)
+            {
+                Vector3 knockback = direction.normalized * knockbackForce;
+                groundedMovement.ApplyKnockback(knockback, knockbackDuration);
+                return;
+            }
+            
+            var flyingMovement = GetComponent<Entities.Enemies.Flying_Enemy.FlyingEnemyMovement>();
+            if (flyingMovement != null)
+            {
+                Vector3 knockback = direction.normalized * knockbackForce;
+                flyingMovement.ApplyKnockback(knockback, knockbackDuration);
             }
         }
 

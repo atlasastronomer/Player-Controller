@@ -18,7 +18,7 @@ public class GemController : MonoBehaviour {
 
     private void DecrementGems() {
         _gemsRemaining -= 1;
-        Debug.Log(_gemsRemaining);
+        // Debug.Log(_gemsRemaining);
 
         if (_gemsRemaining == 0) {
             SceneManager.LoadScene("WinScreen");

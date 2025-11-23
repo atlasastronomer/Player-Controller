@@ -6,7 +6,7 @@ namespace Entities.Nuri
     {
         [Header("Movement Settings")]
         [SerializeField] private float speed = 15f;
-        [SerializeField] private float rotationSpeed = 200f;
+        [SerializeField] private float homingStrength = 3f;
         [SerializeField] private float lifetime = 5f;
         
         [Header("Damage Settings")]
@@ -27,18 +27,23 @@ namespace Entities.Nuri
         {
             if (!_target)
             {
-                transform.position += _direction * (speed * Time.deltaTime);
+                transform.position += _direction * Time.deltaTime;
+                
+                float angle = Mathf.Atan2(_direction.y, _direction.x) * Mathf.Rad2Deg;
+                transform.rotation = Quaternion.Euler(0f, 0f, angle);
                 return;
             }
             
             Vector3 targetDirection = (_target.transform.position - transform.position).normalized;
             
-            _direction = Vector3.RotateTowards(_direction, targetDirection, rotationSpeed * Mathf.Deg2Rad * Time.deltaTime, 0.0f);
+            Vector3 steering = targetDirection * homingStrength;
+            _direction += steering * Time.deltaTime;
+            _direction = _direction.normalized * speed;
             
-            transform.position += _direction * (speed * Time.deltaTime);
+            transform.position += _direction * Time.deltaTime;
             
-            float angle = Mathf.Atan2(_direction.y, _direction.x) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.Euler(0f, 0f, angle);
+            float rotationAngle = Mathf.Atan2(_direction.y, _direction.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(0f, 0f, rotationAngle);
         }
         
         public void SetTarget(GameObject target)
@@ -46,11 +51,11 @@ namespace Entities.Nuri
             _target = target;
             if (_target)
             {
-                _direction = (_target.transform.position - transform.position).normalized;
+                _direction = (_target.transform.position - transform.position).normalized * speed;
             }
             else
             {
-                _direction = Vector3.right;
+                _direction = Vector3.right * speed;
             }
         }
 
@@ -58,10 +63,11 @@ namespace Entities.Nuri
         {
             if (collision.gameObject == _target || ((1 << collision.gameObject.layer) & enemyLayer) != 0)
             {
-                var enemyHealth = collision.GetComponent<Entities.Enemies.EnemyHealth>();
+                var enemyHealth = collision.GetComponent<Enemies.EnemyHealth>();
                 if (enemyHealth != null)
                 {
-                    enemyHealth.TakeDamage(damage);
+                    Vector3 knockbackDirection = (collision.transform.position - transform.position).normalized;
+                    enemyHealth.TakeDamage(damage, knockbackDirection);
                 }
 
                 if (hitEffectPrefab)

@@ -1,3 +1,4 @@
+using System.Collections;
 using Core.Movement;
 using UnityEngine;
 
@@ -71,6 +72,26 @@ namespace Entities.Enemies.Flying_Enemy
             }
 
             _controller.Move(_displacement * Time.deltaTime);
+        }
+        
+        public void ApplyKnockback(Vector3 knockbackForce, float duration)
+        {
+            StartCoroutine(KnockbackCoroutine(knockbackForce, duration));
+        }
+
+        private IEnumerator KnockbackCoroutine(Vector3 knockbackForce, float duration)
+        {
+            Vector3 knockbackVelocity = knockbackForce;
+            float elapsed = 0f;
+    
+            while (elapsed < duration)
+            {
+                _displacement.x = knockbackVelocity.x;
+                _displacement.y = knockbackVelocity.y;
+        
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
         }
     }
 }

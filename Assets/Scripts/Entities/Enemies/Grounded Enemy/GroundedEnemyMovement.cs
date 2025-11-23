@@ -204,6 +204,26 @@ namespace Entities.Enemies.Grounded_Enemy
                 StartCoroutine(Dash());
             }
         }
+        
+        public void ApplyKnockback(Vector3 knockbackForce, float duration)
+        {
+            StartCoroutine(KnockbackCoroutine(knockbackForce, duration));
+        }
+
+        private IEnumerator KnockbackCoroutine(Vector3 knockbackForce, float duration)
+        {
+            Vector3 knockbackVelocity = knockbackForce;
+            float elapsed = 0f;
+    
+            while (elapsed < duration)
+            {
+                _displacement.x = knockbackVelocity.x;
+                _displacement.y = knockbackVelocity.y;
+        
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+        }
 
         private void Jump()
         {
