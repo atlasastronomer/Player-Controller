@@ -6,16 +6,13 @@ namespace Entities.Nuri
     {
         [Header("Movement Settings")]
         [SerializeField] private float speed = 15f;
-        [SerializeField] private float homingStrength = 3f;
         [SerializeField] private float lifetime = 5f;
         
         [Header("Damage Settings")]
         [SerializeField] private int damage = 1;
         [SerializeField] private GameObject hitEffectPrefab;
-
         [SerializeField] private LayerMask enemyLayer;
         
-        private GameObject _target;
         private Vector3 _direction;
 
         private void Start()
@@ -25,48 +22,25 @@ namespace Entities.Nuri
 
         private void Update()
         {
-            if (!_target)
-            {
-                transform.position += _direction * Time.deltaTime;
-                
-                float angle = Mathf.Atan2(_direction.y, _direction.x) * Mathf.Rad2Deg;
-                transform.rotation = Quaternion.Euler(0f, 0f, angle);
-                return;
-            }
+            transform.position += _direction * (speed * Time.deltaTime);
             
-            Vector3 targetDirection = (_target.transform.position - transform.position).normalized;
-            
-            Vector3 steering = targetDirection * homingStrength;
-            _direction += steering * Time.deltaTime;
-            _direction = _direction.normalized * speed;
-            
-            transform.position += _direction * Time.deltaTime;
-            
-            float rotationAngle = Mathf.Atan2(_direction.y, _direction.x) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.Euler(0f, 0f, rotationAngle);
+            float angle = Mathf.Atan2(_direction.y, _direction.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(0f, 0f, angle);
         }
         
-        public void SetTarget(GameObject target)
+        public void SetDirection(Vector3 direction)
         {
-            _target = target;
-            if (_target)
-            {
-                _direction = (_target.transform.position - transform.position).normalized * speed;
-            }
-            else
-            {
-                _direction = Vector3.right * speed;
-            }
+            _direction = direction.normalized;
         }
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            if (collision.gameObject == _target || ((1 << collision.gameObject.layer) & enemyLayer) != 0)
+            if (((1 << collision.gameObject.layer) & enemyLayer) != 0)
             {
                 var enemyHealth = collision.GetComponent<Enemies.EnemyHealth>();
-                if (enemyHealth != null)
+                if (enemyHealth)
                 {
-                    Vector3 knockbackDirection = (collision.transform.position - transform.position).normalized;
+                    Vector3 knockbackDirection = _direction;
                     enemyHealth.TakeDamage(damage, knockbackDirection);
                 }
 

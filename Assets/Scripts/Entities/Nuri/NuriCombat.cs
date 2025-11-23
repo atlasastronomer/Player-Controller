@@ -16,16 +16,55 @@ namespace Entities.Nuri
         [SerializeField] private AudioSource audioSource;
 
         private float _lastAttackTime = Mathf.NegativeInfinity;
-        private GameObject _currentTarget;
+        private GameObject _lockedTarget;
+        private bool _isLockOnEnabled;
+        private Camera _mainCamera;
+
+        private void Start()
+        {
+            _mainCamera = Camera.main;
+        }
 
         private void Update()
         {
-            _currentTarget = FindNearestEnemy();
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                ToggleLockOn();
+            }
 
-            if (Input.GetKey(KeyCode.E) && Time.time >= _lastAttackTime + attackCooldown)
+            if (_isLockOnEnabled)
+            {
+                _lockedTarget = FindNearestEnemy();
+                
+                if (!_lockedTarget)
+                {
+                    _isLockOnEnabled = false;
+                }
+            }
+
+            if (Input.GetMouseButtonDown(0) && Time.time >= _lastAttackTime + attackCooldown)
             {
                 ShootProjectile();
                 _lastAttackTime = Time.time;
+            }
+        }
+
+        private void ToggleLockOn()
+        {
+            _isLockOnEnabled = !_isLockOnEnabled;
+
+            if (_isLockOnEnabled)
+            {
+                _lockedTarget = FindNearestEnemy();
+                
+                if (!_lockedTarget)
+                {
+                    _isLockOnEnabled = false;
+                }
+            }
+            else
+            {
+                _lockedTarget = null;
             }
         }
 
@@ -56,9 +95,22 @@ namespace Entities.Nuri
 
         private void ShootProjectile()
         {
-            if (!projectilePrefab || !_currentTarget)
+            if (!projectilePrefab)
             {
                 return;
+            }
+
+            Vector3 shootDirection;
+
+            if (_isLockOnEnabled && _lockedTarget)
+            {
+                shootDirection = (_lockedTarget.transform.position - transform.position).normalized;
+            }
+            else
+            {
+                Vector3 mouseWorldPos = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
+                mouseWorldPos.z = 0f;
+                shootDirection = (mouseWorldPos - transform.position).normalized;
             }
             
             GameObject projectile = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
@@ -66,7 +118,7 @@ namespace Entities.Nuri
             NuriProjectile projectileScript = projectile.GetComponent<NuriProjectile>();
             if (projectileScript)
             {
-                projectileScript.SetTarget(_currentTarget);
+                projectileScript.SetDirection(shootDirection);
             }
 
             if (audioSource && shootSound)
@@ -77,13 +129,18 @@ namespace Entities.Nuri
         
         private void OnDrawGizmosSelected()
         {
+            if (!player)
+            {
+                return;
+            }
+
             Gizmos.color = Color.yellow;
             Gizmos.DrawWireSphere(player.transform.position, targetingRange);
             
-            if (_currentTarget != null)
+            if (_isLockOnEnabled && _lockedTarget)
             {
                 Gizmos.color = Color.red;
-                Gizmos.DrawLine(player.transform.position, _currentTarget.transform.position);
+                Gizmos.DrawLine(player.transform.position, _lockedTarget.transform.position);
             }
         }
     }
