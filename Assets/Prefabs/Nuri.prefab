@@ -5131,13 +5131,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Entities.Nuri.NuriCombat
   player: {fileID: 1518944993502420753, guid: 28f6d69ca80ee46229e4dabb08047dbc, type: 3}
   projectilePrefab: {fileID: 6524191742186999965, guid: 12e89661f63fd4917a05b2662ce36a29, type: 3}
-  attackCooldown: 0.3
+  attackCooldown: 0.5
   targetingRange: 15
   enemyLayer:
     serializedVersion: 2
     m_Bits: 128
   shootSound: {fileID: 0}
   audioSource: {fileID: 0}
+  targetHighlightColor: {r: 0.8632076, g: 0.9681654, b: 1, a: 0.5}
+  targetGlowIntensity: 0.3
 --- !u!96 &6227185184614381351
 TrailRenderer:
   serializedVersion: 3

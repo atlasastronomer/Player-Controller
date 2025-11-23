@@ -15,9 +15,17 @@ namespace Entities.Nuri
         [SerializeField] private AudioClip shootSound;
         [SerializeField] private AudioSource audioSource;
 
+        [Header("Visual Feedback")]
+        [SerializeField] private Color targetHighlightColor = new Color(0.8f, 0.95f, 1f, 1f);
+        [SerializeField] private float outlineSize = 1.5f;
+
         private float _lastAttackTime = Mathf.NegativeInfinity;
+        
         private GameObject _lockedTarget;
+        private GameObject _previousLockedTarget;
         private bool _isLockOnEnabled;
+        private TargetOutline _targetOutline;
+        
         private Camera _mainCamera;
 
         private void Start()
@@ -41,6 +49,8 @@ namespace Entities.Nuri
                     _isLockOnEnabled = false;
                 }
             }
+
+            UpdateTargetHighlight();
 
             if (Input.GetMouseButtonDown(0) && Time.time >= _lastAttackTime + attackCooldown)
             {
@@ -125,6 +135,47 @@ namespace Entities.Nuri
             {
                 audioSource.PlayOneShot(shootSound);
             }
+        }
+
+        private void UpdateTargetHighlight()
+        {
+            if (_previousLockedTarget && _previousLockedTarget != _lockedTarget)
+            {
+                RemoveHighlight();
+            }
+
+            if (_isLockOnEnabled && _lockedTarget)
+            {
+                if (_lockedTarget != _previousLockedTarget)
+                {
+                    _targetOutline = _lockedTarget.GetComponent<TargetOutline>();
+                    if (!_targetOutline)
+                    {
+                        _targetOutline = _lockedTarget.AddComponent<TargetOutline>();
+                    }
+                }
+
+                if (_targetOutline)
+                {
+                    _targetOutline.EnableOutline(targetHighlightColor, outlineSize);
+                }
+
+                _previousLockedTarget = _lockedTarget;
+            }
+            else if (!_isLockOnEnabled)
+            {
+                RemoveHighlight();
+            }
+        }
+
+        private void RemoveHighlight()
+        {
+            if (_targetOutline)
+            {
+                _targetOutline.DisableOutline();
+                _targetOutline = null;
+            }
+            _previousLockedTarget = null;
         }
         
         private void OnDrawGizmosSelected()
