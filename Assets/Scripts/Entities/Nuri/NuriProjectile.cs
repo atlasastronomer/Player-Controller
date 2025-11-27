@@ -1,5 +1,5 @@
+using System.Collections;
 using UnityEngine;
-using Core.Respawn;
 
 namespace Entities.Nuri
 {
@@ -14,19 +14,16 @@ namespace Entities.Nuri
         [SerializeField] private GameObject hitEffectPrefab;
         [SerializeField] private LayerMask enemyLayer;
         
-        [Header("Projectile Pool")]
-        [SerializeField] ObjectPooler projectilePool;
-        
         [Header("Audio")]
         [SerializeField] private AudioClip[] hitSounds;
         
         private Vector3 _direction;
 
-        private void Start()
+        private void OnEnable()
         {
-            Destroy(gameObject, lifetime);
+            StartCoroutine(ReturnToPool(lifetime));
         }
-
+        
         private void Update()
         {
             transform.position += _direction * (speed * Time.deltaTime);
@@ -51,16 +48,18 @@ namespace Entities.Nuri
                     enemyHealth.TakeDamage(damage, knockbackDirection);
                 }
                 
-                DestroyProjectile();
+                StartCoroutine(ReturnToPool());
             }
             else if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
             {
-                DestroyProjectile();
+                StartCoroutine(ReturnToPool());
             }
         }
 
-        private void DestroyProjectile()
+        private IEnumerator ReturnToPool(float waitTime = 0)
         {
+            yield return new WaitForSeconds(waitTime);
+            
             if (hitEffectPrefab)
             {
                 Instantiate(hitEffectPrefab, transform.position, Quaternion.identity);
@@ -70,12 +69,12 @@ namespace Entities.Nuri
             {
                 AudioClip hitSound = hitSounds[Random.Range(0, hitSounds.Length)];
                 
-                PlayClipAtPointCustom(hitSound, transform.position);
+                PlayClipAtPointCustom(hitSound);
             }
-            Destroy(gameObject);
+            gameObject.SetActive(false);
         }
         
-        public static void PlayClipAtPointCustom(AudioClip clip, Vector3 position, float volume = 1f)
+        private static void PlayClipAtPointCustom(AudioClip clip, float volume = 1f)
         {
             GameObject obj = new GameObject("TempAudio");
             AudioSource source = obj.AddComponent<AudioSource>();
@@ -92,6 +91,5 @@ namespace Entities.Nuri
             source.Play();
             Destroy(obj, clip.length);
         }
-
     }
 }

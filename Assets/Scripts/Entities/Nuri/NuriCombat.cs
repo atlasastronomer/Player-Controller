@@ -1,4 +1,5 @@
 using UnityEngine;
+using Core.Respawn;
 
 namespace Entities.Nuri
 {
@@ -6,15 +7,18 @@ namespace Entities.Nuri
     {
         [Header("Combat Settings")]
         [SerializeField] private GameObject player;
-        [SerializeField] private GameObject projectilePrefab;
         [SerializeField] private float attackCooldown = 0.3f;
         [SerializeField] private float targetingRange = 15f;
         [SerializeField] private LayerMask enemyLayer;
 
+        [Header("Projectile Pool")]
+        [SerializeField] ObjectPooler projectilePool;
+        
         [Header("Audio")]
         [SerializeField] private AudioClip[] shootSounds;
         [SerializeField] private AudioSource audioSource;
 
+        [Header("Internal Variables")]
         private float _lastAttackTime = Mathf.NegativeInfinity;
         private GameObject _lockedTarget;
         private GameObject _previousLockedTarget;
@@ -100,11 +104,6 @@ namespace Entities.Nuri
 
         private void ShootProjectile()
         {
-            if (!projectilePrefab)
-            {
-                return;
-            }
-
             Vector3 shootDirection;
 
             if (_isLockOnEnabled && _lockedTarget)
@@ -116,7 +115,8 @@ namespace Entities.Nuri
                 shootDirection = (mouseWorldPos - transform.position).normalized;
             }
             
-            GameObject projectile = Instantiate(projectilePrefab, transform.position, Quaternion.identity);
+            GameObject projectile = projectilePool.GetPooledObject();
+            projectile.transform.position = transform.position;
 
             NuriProjectile projectileScript = projectile.GetComponent<NuriProjectile>();
             if (projectileScript)
