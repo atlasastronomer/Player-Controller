@@ -26,11 +26,6 @@ namespace Entities.Enemies.Flying_Enemy
         [SerializeField] private float moveSpeed = 6;
         [SerializeField] private float accelerationTime = 0.2f;
 
-        // Jump Variables
-        [SerializeField] private float jumpHeight = 4;
-        [SerializeField] private float timeToJumpApex = 0.4f;
-
-
         Vector3 _displacement;
         Controller2D _controller;
 

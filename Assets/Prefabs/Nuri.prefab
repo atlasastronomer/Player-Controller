@@ -5138,8 +5138,7 @@ MonoBehaviour:
     m_Bits: 128
   shootSound: {fileID: 0}
   audioSource: {fileID: 0}
-  targetHighlightColor: {r: 0.8632076, g: 0.9681654, b: 1, a: 0.5}
-  targetGlowIntensity: 0.3
+  targetHighlightColor: {r: 1, g: 1, b: 1, a: 0.11764706}
 --- !u!96 &6227185184614381351
 TrailRenderer:
   serializedVersion: 3

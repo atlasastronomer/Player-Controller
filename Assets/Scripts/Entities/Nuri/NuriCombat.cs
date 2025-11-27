@@ -15,17 +15,10 @@ namespace Entities.Nuri
         [SerializeField] private AudioClip shootSound;
         [SerializeField] private AudioSource audioSource;
 
-        [Header("Visual Feedback")]
-        [SerializeField] private Color targetHighlightColor = new Color(0.8f, 0.95f, 1f, 1f);
-        [SerializeField] private float outlineSize = 1.5f;
-
         private float _lastAttackTime = Mathf.NegativeInfinity;
-        
         private GameObject _lockedTarget;
         private GameObject _previousLockedTarget;
         private bool _isLockOnEnabled;
-        private TargetOutline _targetOutline;
-        
         private Camera _mainCamera;
 
         private void Start()
@@ -66,7 +59,7 @@ namespace Entities.Nuri
             if (_isLockOnEnabled)
             {
                 _lockedTarget = FindNearestEnemy();
-                
+
                 if (!_lockedTarget)
                 {
                     _isLockOnEnabled = false;
@@ -74,6 +67,7 @@ namespace Entities.Nuri
             }
             else
             {
+                RemoveHighlight();
                 _lockedTarget = null;
             }
         }
@@ -93,6 +87,7 @@ namespace Entities.Nuri
             foreach (Collider2D enemy in enemies)
             {
                 float distance = Vector3.Distance(player.transform.position, enemy.transform.position);
+
                 if (distance < nearestDistance)
                 {
                     nearestDistance = distance;
@@ -113,9 +108,7 @@ namespace Entities.Nuri
             Vector3 shootDirection;
 
             if (_isLockOnEnabled && _lockedTarget)
-            {
                 shootDirection = (_lockedTarget.transform.position - transform.position).normalized;
-            }
             else
             {
                 Vector3 mouseWorldPos = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
@@ -139,42 +132,39 @@ namespace Entities.Nuri
 
         private void UpdateTargetHighlight()
         {
-            if (_previousLockedTarget && _previousLockedTarget != _lockedTarget)
+            if (_previousLockedTarget == _lockedTarget)
             {
-                RemoveHighlight();
+                return;
             }
 
-            if (_isLockOnEnabled && _lockedTarget)
+            if (_previousLockedTarget)
             {
-                if (_lockedTarget != _previousLockedTarget)
+                TargetHighlight highlight = _previousLockedTarget.GetComponent<TargetHighlight>();
+                if (highlight)
                 {
-                    _targetOutline = _lockedTarget.GetComponent<TargetOutline>();
-                    if (!_targetOutline)
-                    {
-                        _targetOutline = _lockedTarget.AddComponent<TargetOutline>();
-                    }
+                    highlight.DisableHighlight();
                 }
-
-                if (_targetOutline)
-                {
-                    _targetOutline.EnableOutline(targetHighlightColor, outlineSize);
-                }
-
-                _previousLockedTarget = _lockedTarget;
             }
-            else if (!_isLockOnEnabled)
+            if (_lockedTarget)
             {
-                RemoveHighlight();
+                TargetHighlight highlight = _lockedTarget.GetComponent<TargetHighlight>();
+                if (highlight) highlight.EnableHighlight();
             }
+
+            _previousLockedTarget = _lockedTarget;
         }
 
         private void RemoveHighlight()
         {
-            if (_targetOutline)
+            if (_previousLockedTarget)
             {
-                _targetOutline.DisableOutline();
-                _targetOutline = null;
+                TargetHighlight highlight = _previousLockedTarget.GetComponent<TargetHighlight>();
+                if (highlight)
+                {
+                    highlight.DisableHighlight();
+                }
             }
+
             _previousLockedTarget = null;
         }
         

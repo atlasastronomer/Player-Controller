@@ -1,4 +1,6 @@
 using System.Collections;
+using Entities.Enemies.Flying_Enemy;
+using Entities.Enemies.Grounded_Enemy;
 using UnityEngine;
 
 namespace Entities.Enemies
@@ -35,11 +37,6 @@ namespace Entities.Enemies
             _originalColor = _spriteRenderer.color;
             _currentHealth = maxHealth;
         }
-
-        public void TakeDamage(int damage)
-        {
-            TakeDamage(damage, Vector3.zero);
-        }
         
         public void TakeDamage(int damage, Vector3 knockbackDirection)
         {
@@ -68,7 +65,7 @@ namespace Entities.Enemies
         
         private void ApplyKnockback(Vector3 direction)
         {
-            var groundedMovement = GetComponent<Entities.Enemies.Grounded_Enemy.GroundedEnemyMovement>();
+            GroundedEnemyMovement groundedMovement = GetComponent<GroundedEnemyMovement>();
             if (groundedMovement != null)
             {
                 Vector3 knockback = direction.normalized * knockbackForce;
@@ -76,7 +73,7 @@ namespace Entities.Enemies
                 return;
             }
             
-            var flyingMovement = GetComponent<Entities.Enemies.Flying_Enemy.FlyingEnemyMovement>();
+            FlyingEnemyMovement flyingMovement = GetComponent<FlyingEnemyMovement>();
             if (flyingMovement != null)
             {
                 Vector3 knockback = direction.normalized * knockbackForce;
@@ -97,11 +94,48 @@ namespace Entities.Enemies
 
         private void Die()
         {
+            StartCoroutine(DeathSequence());
+        }
+
+        private IEnumerator DeathSequence()
+        {
+            GroundedEnemyMovement groundedMovement = GetComponent<GroundedEnemyMovement>();
+            FlyingEnemyMovement flyingMovement = GetComponent<FlyingEnemyMovement>();
+            BoxCollider2D boxCollider = GetComponent<BoxCollider2D>();
+            
+            if (groundedMovement) groundedMovement.enabled = false;
+            if (flyingMovement) flyingMovement.enabled = false;
+            if (boxCollider) boxCollider.enabled = false;
+
+            float flickerTime = 0.5f;
+            float interval = 0.05f;
+            float elapsed = 0f;
+            
+            Vector3 originalPos = transform.localPosition;
+
+            while (elapsed < flickerTime)
+            {
+                _spriteRenderer.color = Color.white;
+                transform.localPosition = originalPos + (Vector3)Random.insideUnitCircle * 0.05f;
+                
+                yield return new WaitForSeconds(interval);
+                
+                _spriteRenderer.color = _originalColor * 0.6f;
+                
+                transform.localPosition = originalPos;
+                
+                yield return new WaitForSeconds(interval);
+                
+                elapsed += interval * 2f;
+            }
+            
+            transform.localPosition = originalPos;
+
             if (deathEffectPrefab)
             {
                 Instantiate(deathEffectPrefab, transform.position, Quaternion.identity);
             }
-            
+
             if (audioSource && deathSound)
             {
                 audioSource.PlayOneShot(deathSound);
