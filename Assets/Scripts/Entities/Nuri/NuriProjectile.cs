@@ -1,10 +1,11 @@
 using UnityEngine;
+using Core.Respawn;
 
 namespace Entities.Nuri
 {
     public class NuriProjectile : MonoBehaviour
     {
-        [Header("Movement Settings")]
+        [Header("Projectile Settings")]
         [SerializeField] private float speed = 15f;
         [SerializeField] private float lifetime = 5f;
         
@@ -12,6 +13,9 @@ namespace Entities.Nuri
         [SerializeField] private int damage = 1;
         [SerializeField] private GameObject hitEffectPrefab;
         [SerializeField] private LayerMask enemyLayer;
+        
+        [Header("Projectile Pool")]
+        [SerializeField] ObjectPooler projectilePool;
         
         [Header("Audio")]
         [SerializeField] private AudioClip[] hitSounds;
