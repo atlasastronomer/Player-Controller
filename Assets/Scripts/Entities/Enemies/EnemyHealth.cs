@@ -11,11 +11,6 @@ namespace Entities.Enemies
         [SerializeField] private int maxHealth = 3;
         private int _currentHealth;
         
-        [Header("Public Health Properties")]
-        public int MaxHealth => maxHealth;
-        public int CurrentHealth => _currentHealth;
-        public bool IsDead => _currentHealth <= 0;
-        
         [Header("Damage Feedback")]
         [SerializeField] private float knockbackForce = 10f;
         [SerializeField] private float knockbackDuration = 0.2f;
@@ -25,7 +20,7 @@ namespace Entities.Enemies
         
         [Header("Death")]
         [SerializeField] private GameObject deathEffectPrefab;
-        [SerializeField] private AudioClip deathSound;
+        [SerializeField] private AudioClip[] deathSounds;
         [SerializeField] private AudioSource audioSource;
         
         private Color _originalColor;
@@ -136,8 +131,9 @@ namespace Entities.Enemies
                 Instantiate(deathEffectPrefab, transform.position, Quaternion.identity);
             }
 
-            if (audioSource && deathSound)
+            if (audioSource && deathSounds.Length > 0)
             {
+                AudioClip deathSound = deathSounds[Random.Range(0, deathSounds.Length)];
                 audioSource.PlayOneShot(deathSound);
             }
             

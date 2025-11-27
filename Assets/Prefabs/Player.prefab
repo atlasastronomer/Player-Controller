@@ -309,25 +309,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e9ebf3f6094f4e7faf539a8d7ad7210, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxMidairJumps: 1
-  maxMidairDashes: 1
   moveSpeed: 15
   accelerationTimeAirborne: 0.1
   accelerationTimeGrounded: 0.1
+  maxMidairDashes: 1
   dashingTime: 0.2
   dashSpeed: 30
   dashCooldown: 0.25
   dashAccelerationTime: 0
   tr: {fileID: 261366589755064246}
   ps: {fileID: 3545249179371589239}
-  dashSound: {fileID: 8300000, guid: eee1419eab2454a858ecc3fdf4783b5a, type: 3}
+  dashSounds:
+  - {fileID: 8300000, guid: 1eb725b00e9cb43009fe625497d9fc7a, type: 3}
+  - {fileID: 8300000, guid: 87ad1aec296c446c5909c0121ccae167, type: 3}
   dashAudioSource: {fileID: 8896539033175013578}
+  maxMidairJumps: 1
   maxJumpHeight: 5
   timeToJumpApex: 0.5
-  gravityDown: 6
   wallClimb: {x: 10.5, y: 25, z: 0}
   wallLeap: {x: 15, y: 25, z: 0}
   wallHop: {x: 10, y: 15, z: 0}
+  gravityDown: 6
   terminalVelocity: 80
   knockbackGravity: 40
   displacement: {x: 0, y: 0, z: 0}

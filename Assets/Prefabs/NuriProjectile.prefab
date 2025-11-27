@@ -150,6 +150,10 @@ MonoBehaviour:
   enemyLayer:
     serializedVersion: 2
     m_Bits: 128
+  hitSounds:
+  - {fileID: 8300000, guid: d5f10545f8d92416e86823f9e75bc93e, type: 3}
+  - {fileID: 8300000, guid: bbf6029383b444fc0ad627ebb0ee1b8a, type: 3}
+  - {fileID: 8300000, guid: f92b6bc9f3ffb4c588d653d87273e3e3, type: 3}
 --- !u!50 &3920098690229484959
 Rigidbody2D:
   serializedVersion: 5

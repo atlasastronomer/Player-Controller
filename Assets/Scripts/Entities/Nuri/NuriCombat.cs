@@ -12,7 +12,7 @@ namespace Entities.Nuri
         [SerializeField] private LayerMask enemyLayer;
 
         [Header("Audio")]
-        [SerializeField] private AudioClip shootSound;
+        [SerializeField] private AudioClip[] shootSounds;
         [SerializeField] private AudioSource audioSource;
 
         private float _lastAttackTime = Mathf.NegativeInfinity;
@@ -124,8 +124,9 @@ namespace Entities.Nuri
                 projectileScript.SetDirection(shootDirection);
             }
 
-            if (audioSource && shootSound)
+            if (audioSource && shootSounds.Length > 0)
             {
+                AudioClip shootSound = shootSounds[Random.Range(0, shootSounds.Length)];
                 audioSource.PlayOneShot(shootSound);
             }
         }

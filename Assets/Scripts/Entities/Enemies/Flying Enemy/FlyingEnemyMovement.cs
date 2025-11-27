@@ -7,25 +7,26 @@ namespace Entities.Enemies.Flying_Enemy
     [RequireComponent(typeof(Controller2D))]
     public class FlyingEnemyMovement : MonoBehaviour
     {
-        // States
+        [Header("State")]
         private bool _isGrounded;
         private bool _isTouchingCeiling;
         private bool _isChasing;
 
-        // Player variables
+        [Header("References")]
         [SerializeField] GameObject player;
 
-        // AI Variables
+        [Header("Movement Variables")]
         private float _horizontalInput;
         private float _verticalInput;
         private float _displacementXSmoothing;
         private float _displacementYSmoothing;
-        [SerializeField] private float chaseDistance = 5f;
 
-        // Run  Variables
+        [Header("AI Variables")]
+        [SerializeField] private float chaseDistance = 5f;
         [SerializeField] private float moveSpeed = 6;
         [SerializeField] private float accelerationTime = 0.2f;
 
+        [Header("Internal Variables")]
         Vector3 _displacement;
         Controller2D _controller;
 
@@ -55,10 +56,8 @@ namespace Entities.Enemies.Flying_Enemy
             float targetDisplacementY = _verticalInput * moveSpeed;
             if (_isChasing)
             {
-                _displacement.x = Mathf.SmoothDamp(_displacement.x, targetDisplacementX, ref _displacementXSmoothing,
-                    accelerationTime);
-                _displacement.y = Mathf.SmoothDamp(_displacement.y, targetDisplacementY, ref _displacementYSmoothing,
-                    accelerationTime);
+                _displacement.x = Mathf.SmoothDamp(_displacement.x, targetDisplacementX, ref _displacementXSmoothing, accelerationTime);
+                _displacement.y = Mathf.SmoothDamp(_displacement.y, targetDisplacementY, ref _displacementYSmoothing, accelerationTime);
             }
             else
             {

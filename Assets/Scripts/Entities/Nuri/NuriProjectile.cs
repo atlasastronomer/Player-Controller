@@ -13,6 +13,9 @@ namespace Entities.Nuri
         [SerializeField] private GameObject hitEffectPrefab;
         [SerializeField] private LayerMask enemyLayer;
         
+        [Header("Audio")]
+        [SerializeField] private AudioClip[] hitSounds;
+        
         private Vector3 _direction;
 
         private void Start()
@@ -43,23 +46,48 @@ namespace Entities.Nuri
                     Vector3 knockbackDirection = _direction;
                     enemyHealth.TakeDamage(damage, knockbackDirection);
                 }
-
-                if (hitEffectPrefab)
-                {
-                    Instantiate(hitEffectPrefab, transform.position, Quaternion.identity);
-                }
-
-                Destroy(gameObject);
+                
+                DestroyProjectile();
             }
             else if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
             {
-                if (hitEffectPrefab)
-                {
-                    Instantiate(hitEffectPrefab, transform.position, Quaternion.identity);
-                }
-
-                Destroy(gameObject);
+                DestroyProjectile();
             }
         }
+
+        private void DestroyProjectile()
+        {
+            if (hitEffectPrefab)
+            {
+                Instantiate(hitEffectPrefab, transform.position, Quaternion.identity);
+            }
+
+            if (hitSounds.Length > 0)
+            {
+                AudioClip hitSound = hitSounds[Random.Range(0, hitSounds.Length)];
+                
+                PlayClipAtPointCustom(hitSound, transform.position);
+            }
+            Destroy(gameObject);
+        }
+        
+        public static void PlayClipAtPointCustom(AudioClip clip, Vector3 position, float volume = 1f)
+        {
+            GameObject obj = new GameObject("TempAudio");
+            AudioSource source = obj.AddComponent<AudioSource>();
+
+            source.clip = clip;
+            source.volume = volume;
+
+            source.spatialBlend = 0f; 
+            
+            source.minDistance = 1f;
+            source.maxDistance = 50f;
+            source.rolloffMode = AudioRolloffMode.Linear;
+
+            source.Play();
+            Destroy(obj, clip.length);
+        }
+
     }
 }

@@ -7,88 +7,78 @@ namespace Entities.Player
     [RequireComponent(typeof(Controller2D))]
     public class PlayerMovement : MonoBehaviour
     {
-        // States
+        [Header("State")]
         private bool _isGrounded;
-        public bool IsGrounded => _isGrounded;
-
         private bool _isJumping;
-        public bool IsJumping => _isJumping;
-
         private bool _isFalling;
-        public bool IsFalling => _isFalling;
-
-        private bool IsKnockedbacked { get; set; }
-
-        [SerializeField] private int maxMidairJumps = 2;
-        private int _currentMidairJumps;
-        
-        [SerializeField] private int maxMidairDashes = 1;
-        private int _currentMidairDashes;
-
         private bool _isDashing;
-        public bool IsDashing => _isDashing;
-        
-        private bool _canSwitchDirections;
-        private bool _canJump;
-        private bool _canWallJump;
         private bool _isTouchingCeiling;
         private bool _isWallSlidingRight;
         private bool _isWallSlidingLeft;
+        private bool IsKnockedbacked { get; set; }
+        private int _currentMidairJumps;
+        private int _currentMidairDashes;
+        private bool _canSwitchDirections;
+        private bool _canJump;
+        private bool _canWallJump;
         private bool _canDash = true;
         private int _dashDirection;
-
-        // Run  Variables
+        
+        public bool IsGrounded => _isGrounded;
+        public bool IsJumping => _isJumping;
+        public bool IsFalling => _isFalling;
+        public bool IsDashing => _isDashing;
+        
+        [Header("Run Settings")]
         [SerializeField] private float moveSpeed = 6;
         [SerializeField] private float accelerationTimeAirborne = 0.2f;
         [SerializeField] private float accelerationTimeGrounded = 0.1f;
         private float _displacementXSmoothing;
         private int _facingDirection = 1;
 
-        // Dash Variables;
+        [Header("Dash Settings")]
+        [SerializeField] private int maxMidairDashes = 1;
         [SerializeField] private float dashingTime = 0.2f;
         [SerializeField] private float dashSpeed = 34f;
         [SerializeField] private float dashCooldown = 0.5f;
         [SerializeField] private float dashAccelerationTime;
         [SerializeField] private TrailRenderer tr;
         [SerializeField] private ParticleSystem ps;
-        [SerializeField] private AudioClip dashSound;
+        [SerializeField] private AudioClip[] dashSounds;
         [SerializeField] private AudioSource dashAudioSource;
 
         private Coroutine _dashCoroutine;
         private ParticleSystem.EmissionModule _psEmission;
 
-        // Jump Variables
+        [Header("Jump Settings")]
+        [SerializeField] private int maxMidairJumps = 1;
         [SerializeField] private float maxJumpHeight;
         [SerializeField] private float timeToJumpApex;
-
         private const float JumpBufferWindow = 0.1f;
         private float _bufferWindow;
         private const float CoyoteTimeWindow = 0.1f;
         private float _timeLastTouchedGround;
         private float _displacementYSmoothing;
 
-        // Fast Fall Variables
-        [SerializeField] private float gravityDown;
-        private float _gravityDown;
-
-        // Wall Jump Variables
-        private float _wallSlideDisplacementY;
-        private const float WallSlideDeceleration = 0.1f;
-
+        [Header("Wall Jump Settings")]
         [SerializeField] private Vector3 wallClimb;
         [SerializeField] private Vector3 wallLeap;
         [SerializeField] private Vector3 wallHop;
-
-        // Gravity
+        private float _wallSlideDisplacementY;
+        private const float WallSlideDeceleration = 0.1f;
+        
+        [Header("Gravity Settings")]
+        [SerializeField] private float gravityDown;
+        [SerializeField] private float terminalVelocity = 80f;
+        private float _gravityDown;
         private float _gravity;
         private float _jumpForce;
-        [SerializeField] private float terminalVelocity = 80f;
 
-        // Knockback Variables
+        [Header("Knockback Settings")]
         [SerializeField] private float knockbackGravity = 40f;
         private Vector3 _knockbackVelocity;
-
-        // Update Variables
+        
+        [Header("Internal Variables")]
         public Vector3 displacement;
         Controller2D _controller;
 
@@ -371,6 +361,7 @@ namespace Entities.Player
             _dashDirection = _facingDirection;
             ps.Stop();
             tr.emitting = true;
+            AudioClip dashSound = dashSounds[Random.Range(0, dashSounds.Length)];
             dashAudioSource.PlayOneShot(dashSound);
             yield return new WaitForSeconds(dashingTime);
             ps.Play();
