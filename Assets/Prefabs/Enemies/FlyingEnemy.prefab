@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &387329737297308602
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 831689822350123019}
+  m_Layer: 7
+  m_Name: SpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &831689822350123019
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 387329737297308602}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7414652729760008468}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3181352186659241892
 GameObject:
   m_ObjectHideFlags: 0
@@ -9702,15 +9733,15 @@ GameObject:
   - component: {fileID: 1621537003250904922}
   - component: {fileID: 8917352953060641350}
   - component: {fileID: 3440711305388713761}
-  - component: {fileID: 2380718910069299873}
-  - component: {fileID: 7041169390815167801}
   - component: {fileID: 2848174074301874233}
   - component: {fileID: 3333633035474711785}
   - component: {fileID: 5230702145588843136}
   - component: {fileID: 7226112441784886246}
   - component: {fileID: 5623423530632976676}
-  - component: {fileID: 2726982718128555850}
   - component: {fileID: -8099201133360701652}
+  - component: {fileID: 2380718910069299873}
+  - component: {fileID: 7041169390815167801}
+  - component: {fileID: 2726982718128555850}
   - component: {fileID: 2354555617936623333}
   m_Layer: 7
   m_Name: FlyingEnemy
@@ -9734,6 +9765,7 @@ Transform:
   m_Children:
   - {fileID: 5076979410725749250}
   - {fileID: 7126129258853953971}
+  - {fileID: 831689822350123019}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1621537003250904922
@@ -9860,6 +9892,98 @@ MonoBehaviour:
   collider: {fileID: 0}
   horizontalRaySpacing: 4
   verticalRaySpacing: 4
+--- !u!114 &2848174074301874233
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4347115093975928765}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: efb0ff0a661f04e86b158f5f50521ed8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnPoint: {fileID: 831689822350123019}
+--- !u!114 &3333633035474711785
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4347115093975928765}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9193380abc0604d5ea2165794b2dd946, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 1518944993502420753, guid: 28f6d69ca80ee46229e4dabb08047dbc, type: 3}
+  chaseDistance: 20
+  moveSpeed: 6
+  accelerationTime: 0.2
+--- !u!114 &5230702145588843136
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4347115093975928765}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acd44c24e2e1144c598028a528355fea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 1
+--- !u!114 &7226112441784886246
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4347115093975928765}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16a61d5a6c0045a0952c9abf762adbdd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KnockbackValues
+  knockbackForce: 12
+--- !u!114 &5623423530632976676
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4347115093975928765}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 400f2dccdee44aee8a5ad2071d24350b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Entities.Enemies.EnemyHealth
+  maxHealth: 1
+  knockbackForce: 10
+  knockbackDuration: 0.2
+  damageColor: {r: 1, g: 0, b: 0, a: 1}
+  damageFlashDuration: 0.1
+  deathEffectPrefab: {fileID: 169631761582015256, guid: 44a0c4b5a37884b2f92ef2cf2b13432c, type: 3}
+  deathSounds:
+  - {fileID: 8300000, guid: 5ab63fadf997947e38bbbf07c1215577, type: 3}
+  audioSource: {fileID: 2354555617936623333}
+--- !u!114 &-8099201133360701652
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4347115093975928765}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 921ac2bd78d5425b89b74a7f1b3964a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TargetHighlight
+  highlightColor: {r: 0.8, g: 0.95, b: 1, a: 1}
+  pulseSpeed: 3
+  pulseStrength: 0.5
+  highlightParticles: {fileID: 490722693858130834}
 --- !u!95 &2380718910069299873
 Animator:
   serializedVersion: 7
@@ -10001,81 +10125,6 @@ TrailRenderer:
   m_Autodestruct: 0
   m_Emitting: 0
   m_ApplyActiveColorSpace: 1
---- !u!114 &2848174074301874233
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4347115093975928765}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: efb0ff0a661f04e86b158f5f50521ed8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &3333633035474711785
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4347115093975928765}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9193380abc0604d5ea2165794b2dd946, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  player: {fileID: 1518944993502420753, guid: 28f6d69ca80ee46229e4dabb08047dbc, type: 3}
-  chaseDistance: 20
-  moveSpeed: 6
-  accelerationTime: 0.2
---- !u!114 &5230702145588843136
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4347115093975928765}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: acd44c24e2e1144c598028a528355fea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damage: 1
---- !u!114 &7226112441784886246
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4347115093975928765}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 16a61d5a6c0045a0952c9abf762adbdd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::KnockbackValues
-  knockbackForce: 12
---- !u!114 &5623423530632976676
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4347115093975928765}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 400f2dccdee44aee8a5ad2071d24350b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Entities.Enemies.EnemyHealth
-  maxHealth: 1
-  knockbackForce: 10
-  knockbackDuration: 0.2
-  damageColor: {r: 1, g: 0, b: 0, a: 1}
-  damageFlashDuration: 0.1
-  deathEffectPrefab: {fileID: 169631761582015256, guid: 44a0c4b5a37884b2f92ef2cf2b13432c, type: 3}
-  deathSounds:
-  - {fileID: 8300000, guid: 5ab63fadf997947e38bbbf07c1215577, type: 3}
-  audioSource: {fileID: 2354555617936623333}
 --- !u!50 &2726982718128555850
 Rigidbody2D:
   serializedVersion: 5
@@ -10103,22 +10152,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &-8099201133360701652
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4347115093975928765}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 921ac2bd78d5425b89b74a7f1b3964a5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TargetHighlight
-  highlightColor: {r: 0.8, g: 0.95, b: 1, a: 1}
-  pulseSpeed: 3
-  pulseStrength: 0.5
-  highlightParticles: {fileID: 490722693858130834}
 --- !u!82 &2354555617936623333
 AudioSource:
   m_ObjectHideFlags: 0

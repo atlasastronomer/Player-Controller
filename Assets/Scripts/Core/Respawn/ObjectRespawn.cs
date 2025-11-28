@@ -5,22 +5,26 @@ namespace Core.Respawn
 {
     public class ObjectRespawn : MonoBehaviour
     {
-        private Vector3 _respawnPosition;
+        [SerializeField] private Transform spawnPoint;
 
-        private void Start()
+
+        private void OnEnable()
         {
-            _respawnPosition = transform.position;
             PlayerHealth.OnDeath += Respawn;
         }
-
+        
         private void OnDestroy()
         {
             PlayerHealth.OnDeath -= Respawn;
         }
-
+        
         private void Respawn()
         {
-            transform.position = _respawnPosition;
+            gameObject.SetActive(false);
+            
+            transform.position = spawnPoint.position;
+            
+            gameObject.SetActive(true);
         }
     }
 }

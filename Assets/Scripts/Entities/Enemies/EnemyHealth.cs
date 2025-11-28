@@ -2,6 +2,7 @@ using System.Collections;
 using Entities.Enemies.Flying_Enemy;
 using Entities.Enemies.Grounded_Enemy;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Entities.Enemies
 {
@@ -26,11 +27,22 @@ namespace Entities.Enemies
         private Color _originalColor;
         private bool _isInvulnerable;
 
-        private void Start()
+        private void OnEnable()
         {
             _spriteRenderer = GetComponent<SpriteRenderer>();
             _originalColor = _spriteRenderer.color;
+            _spriteRenderer.color = _originalColor;
             _currentHealth = maxHealth;
+            _isInvulnerable = false;
+
+            GroundedEnemyMovement groundedEnemyMovement = GetComponent<GroundedEnemyMovement>();
+            if (groundedEnemyMovement) groundedEnemyMovement.enabled = true;
+
+            FlyingEnemyMovement flyingEnemyMovement = GetComponent<FlyingEnemyMovement>();
+            if (flyingEnemyMovement) flyingEnemyMovement.enabled = true;
+            
+            BoxCollider2D boxCollider = GetComponent<BoxCollider2D>();
+            if (boxCollider) boxCollider.enabled = true;
         }
         
         public void TakeDamage(int damage, Vector3 knockbackDirection)
@@ -137,7 +149,7 @@ namespace Entities.Enemies
                 audioSource.PlayOneShot(deathSound);
             }
             
-            Destroy(gameObject);
+            gameObject.SetActive(false);
         }
     }
 }

@@ -4959,6 +4959,7 @@ Transform:
   m_Children:
   - {fileID: 2061961193626260404}
   - {fileID: 6870792818882703745}
+  - {fileID: 3106042776607120884}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &2903121405157730315
@@ -5097,6 +5098,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efb0ff0a661f04e86b158f5f50521ed8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Core.Respawn.ObjectRespawn
+  spawnPoint: {fileID: 3106042776607120884}
 --- !u!114 &2579383173894387016
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5131,13 +5133,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Entities.Nuri.NuriCombat
   player: {fileID: 0}
-  projectilePrefab: {fileID: 6524191742186999965, guid: 12e89661f63fd4917a05b2662ce36a29, type: 3}
   attackCooldown: 0.3
   targetingRange: 15
   enemyLayer:
     serializedVersion: 2
     m_Bits: 128
-  projectilePool: {fileID: 6143097688609576660, guid: 2c2a4c2c6c9c74dfe9ce4323e8338a61, type: 3}
+  projectilePool: {fileID: 0}
   shootSounds:
   - {fileID: 8300000, guid: b703a638555c6492b97a63f3aa46108b, type: 3}
   - {fileID: 8300000, guid: ac582798e29b342b68e9590b1b01440d, type: 3}
@@ -5359,3 +5360,34 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!1 &8041043148503433139
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3106042776607120884}
+  m_Layer: 0
+  m_Name: SpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3106042776607120884
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8041043148503433139}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 501848672647001759}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
