@@ -8,6 +8,8 @@ namespace Entities.Enemies
 {
     public class EnemyHealth : MonoBehaviour
     {
+        [SerializeField] private LayerMask killBoxMask;
+        
         [Header("Health Settings")]
         [SerializeField] private int maxHealth = 3;
         private int _currentHealth;
@@ -17,20 +19,26 @@ namespace Entities.Enemies
         [SerializeField] private float knockbackDuration = 0.2f;
         [SerializeField] private Color damageColor = Color.red;
         [SerializeField] private float damageFlashDuration = 0.1f;
-        private SpriteRenderer _spriteRenderer;
         
         [Header("Death")]
         [SerializeField] private GameObject deathEffectPrefab;
         [SerializeField] private AudioClip[] deathSounds;
         [SerializeField] private AudioSource audioSource;
         
+        [Header("Internal Variables")]
         private Color _originalColor;
         private bool _isInvulnerable;
+        private SpriteRenderer _spriteRenderer;
 
-        private void OnEnable()
+        private void Awake()
         {
             _spriteRenderer = GetComponent<SpriteRenderer>();
             _originalColor = _spriteRenderer.color;
+        }
+        
+        private void OnEnable()
+        {
+            _spriteRenderer = GetComponent<SpriteRenderer>();
             _spriteRenderer.color = _originalColor;
             _currentHealth = maxHealth;
             _isInvulnerable = false;
@@ -43,6 +51,14 @@ namespace Entities.Enemies
             
             BoxCollider2D boxCollider = GetComponent<BoxCollider2D>();
             if (boxCollider) boxCollider.enabled = true;
+        }
+        
+        private void OnTriggerEnter2D(Collider2D other)
+        {
+            if ((killBoxMask.value & (1 << other.transform.gameObject.layer)) > 0)
+            {
+                StartCoroutine(DeathSequence());
+            }
         }
         
         public void TakeDamage(int damage, Vector3 knockbackDirection)
@@ -122,15 +138,13 @@ namespace Entities.Enemies
 
             while (elapsed < flickerTime)
             {
-                _spriteRenderer.color = Color.white;
+                _spriteRenderer.enabled = true;
                 transform.localPosition = originalPos + (Vector3)Random.insideUnitCircle * 0.05f;
-                
                 yield return new WaitForSeconds(interval);
                 
                 _spriteRenderer.color = _originalColor * 0.6f;
                 
                 transform.localPosition = originalPos;
-                
                 yield return new WaitForSeconds(interval);
                 
                 elapsed += interval * 2f;
@@ -138,6 +152,9 @@ namespace Entities.Enemies
             
             transform.localPosition = originalPos;
 
+            _spriteRenderer.color = _originalColor;
+            _spriteRenderer.enabled = true;
+            
             if (deathEffectPrefab)
             {
                 Instantiate(deathEffectPrefab, transform.position, Quaternion.identity);

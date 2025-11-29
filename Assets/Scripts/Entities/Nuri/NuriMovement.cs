@@ -7,7 +7,7 @@ namespace Entities.Nuri
     [RequireComponent(typeof(Controller2D))]
     public class NuriMovement : MonoBehaviour
     {
-        [SerializeField] GameObject player;
+        [SerializeField] private GameObject player;
 
         [Header("Orbit Variables")]
         [SerializeField] float orbitRadiusX = 1f;
@@ -23,11 +23,18 @@ namespace Entities.Nuri
         [SerializeField] float maxCatchUpSpeed = 15f;
         [SerializeField] float catchUpDistanceThreshold = 2f;
 
+        [Header("Internal Variables")]
         private float _time;
         private Vector3 _smoothedCenter;
+        private Vector3 _initialPosition;
         private Controller2D _controller;
 
         private bool _isResetting = false;
+        
+        void Awake()
+        {
+            _initialPosition = transform.position;
+        }
         
         void OnEnable()
         {
@@ -80,7 +87,8 @@ namespace Entities.Nuri
         {
             if (_isResetting)
             {
-                _smoothedCenter = transform.position;
+                transform.position = _initialPosition;
+                _smoothedCenter = _initialPosition;
                 _isResetting = false;
             }
         }

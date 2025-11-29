@@ -13,7 +13,6 @@ public class GameOverScreenController : MonoBehaviour {
     [SerializeField] private float glitchStrength = 50;
     [SerializeField] private float scanLinesStrength;
     [SerializeField] private Color scanLineColor = new Color(0.7372549019607844f,0.5803921568627451f,0.7647058823529411f);
-    // private Color scanLineColor = new Color(0.6705882352941176f,0.6705882352941176f,0.6705882352941176f);
     
     private float _noise;
     private float _glitch;

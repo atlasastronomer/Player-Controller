@@ -5,9 +5,15 @@ namespace Core.Respawn
 {
     public class ObjectRespawn : MonoBehaviour
     {
-        [SerializeField] private Transform spawnPoint;
-
-
+        private Vector3 _initialLocalPosition;
+        private Quaternion _initialLocalRotation;
+        
+        private void Awake()
+        {
+            _initialLocalPosition = transform.localPosition;
+            _initialLocalRotation = transform.localRotation;
+        }
+        
         private void OnEnable()
         {
             PlayerHealth.OnDeath += Respawn;
@@ -22,7 +28,8 @@ namespace Core.Respawn
         {
             gameObject.SetActive(false);
             
-            transform.position = spawnPoint.position;
+            transform.localPosition = _initialLocalPosition;
+            transform.localRotation = _initialLocalRotation;
             
             gameObject.SetActive(true);
         }
