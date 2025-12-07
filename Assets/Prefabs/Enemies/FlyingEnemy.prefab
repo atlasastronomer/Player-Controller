@@ -9761,7 +9761,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: -876546973899608171, guid: bae2e869596444a489b189fa625d819d, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -9926,6 +9926,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 400f2dccdee44aee8a5ad2071d24350b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Entities.Enemies.EnemyHealth
+  killBoxMask:
+    serializedVersion: 2
+    m_Bits: 0
   maxHealth: 1
   knockbackForce: 10
   knockbackDuration: 0.2

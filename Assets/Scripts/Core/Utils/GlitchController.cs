@@ -39,7 +39,7 @@ namespace Core.Utils
             _color1 = Color.white;
             _color2 = Color.white;
 
-            PlayerHealth.OnDamageTaken += SetGlitchTimer;
+            // PlayerHealth.OnDamageTaken += SetGlitchTimer;
             PlayerHealth.OnDeath += SetGlitchTimer;
         }
 
